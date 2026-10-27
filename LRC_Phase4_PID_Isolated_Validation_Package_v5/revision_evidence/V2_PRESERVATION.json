@@ -1,0 +1,22 @@
+{
+  "v1_zip_unchanged_sha256": "64e39231b20e63ce6b1ce091ef977fb3e7d6b89b265ab4378289b67e6d4c8c99",
+  "byte_identical_v1_paths": [
+    "baseline/FINAL_ASSESSMENT.json",
+    "baseline/LRC_Phase2_OpenLoop.slx",
+    "baseline/MASTER_EXECUTION_PROMPT.txt",
+    "baseline/PHASE2_FORMAL_CLOSURE_RECORD_20261024.md",
+    "baseline/PHASE3_ANALYTICAL_REVIEW_20261024.md",
+    "baseline/PHASE3_ANALYTICAL_ROBUSTNESS_QUALIFICATION.md",
+    "baseline/PHASE3_CONSTRAINED_SYNTHESIS_REVIEW.md",
+    "baseline/POST_RECHECK_INTEGRITY_NOTE.md",
+    "baseline/SHA256SUMS_NATIVE.txt",
+    "baseline/SHA256SUMS_RETURNED.txt",
+    "baseline/init_lrc_pid.m",
+    "matlab/p4_constants.m",
+    "TEST_REGISTER.md",
+    "ARCHITECTURE_AND_SEMANTICS.md"
+  ],
+  "baseline_and_historical_files_unchanged": true,
+  "gains_plant_parameters_test_register_and_controller_architecture_unchanged": true,
+  "MATLAB_Simulink_execution": false
+}

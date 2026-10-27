@@ -1,0 +1,221 @@
+{
+  "classification": "STATIC_SOURCE_DERIVED_NOT_MATLAB_RUNTIME",
+  "checks": [
+    {
+      "test": "required_fields_unique",
+      "pass": true
+    },
+    {
+      "test": "required_LimitIntegrator",
+      "pass": true
+    },
+    {
+      "test": "required_UpperIntegratorSaturationLimit",
+      "pass": true
+    },
+    {
+      "test": "required_LowerIntegratorSaturationLimit",
+      "pass": true
+    },
+    {
+      "test": "required_LimitOutput",
+      "pass": true
+    },
+    {
+      "test": "no_failed_parameter_name_in_builder",
+      "pass": true
+    },
+    {
+      "test": "original_fail_closed_assertion_retained",
+      "pass": true
+    },
+    {
+      "test": "native_integrator_limit_off",
+      "pass": true
+    },
+    {
+      "test": "native_output_limit_independently_off",
+      "pass": true
+    },
+    {
+      "test": "integrator_limits_not_rewritten",
+      "pass": true
+    },
+    {
+      "test": "initial_integrator_limits_read",
+      "pass": true
+    },
+    {
+      "test": "infinite_default_validation",
+      "pass": true
+    },
+    {
+      "test": "integrator_limit_values_preserved",
+      "pass": true
+    },
+    {
+      "test": "post_configuration_LimitIntegrator",
+      "pass": true
+    },
+    {
+      "test": "post_configuration_LimitOutput",
+      "pass": true
+    },
+    {
+      "test": "complete_synthetic_metadata_passes",
+      "pass": true
+    },
+    {
+      "test": "every_required_field_missing_rejected",
+      "pass": true
+    },
+    {
+      "test": "synthetic_limit_fixture_defaults",
+      "pass": true
+    },
+    {
+      "test": "synthetic_limit_fixture_finite_upper",
+      "pass": true
+    },
+    {
+      "test": "synthetic_limit_fixture_finite_lower",
+      "pass": true
+    },
+    {
+      "test": "synthetic_limit_fixture_reversed",
+      "pass": true
+    },
+    {
+      "test": "synthetic_limit_fixture_malformed",
+      "pass": true
+    },
+    {
+      "test": "construction_gate_explicit",
+      "pass": true
+    },
+    {
+      "test": "construction_independent_of_simulation_permission",
+      "pass": true
+    },
+    {
+      "test": "no_simulation_call_in_construction",
+      "pass": true
+    },
+    {
+      "test": "no_simulation_start_command",
+      "pass": true
+    },
+    {
+      "test": "compile_command_retained",
+      "pass": true
+    }
+  ],
+  "missing_field_fixtures": [
+    {
+      "missing_field": "Controller",
+      "rejected": true
+    },
+    {
+      "missing_field": "Form",
+      "rejected": true
+    },
+    {
+      "missing_field": "TimeDomain",
+      "rejected": true
+    },
+    {
+      "missing_field": "P",
+      "rejected": true
+    },
+    {
+      "missing_field": "I",
+      "rejected": true
+    },
+    {
+      "missing_field": "D",
+      "rejected": true
+    },
+    {
+      "missing_field": "N",
+      "rejected": true
+    },
+    {
+      "missing_field": "b",
+      "rejected": true
+    },
+    {
+      "missing_field": "c",
+      "rejected": true
+    },
+    {
+      "missing_field": "TrackingMode",
+      "rejected": true
+    },
+    {
+      "missing_field": "Kt",
+      "rejected": true
+    },
+    {
+      "missing_field": "LimitOutput",
+      "rejected": true
+    },
+    {
+      "missing_field": "UseKiTs",
+      "rejected": true
+    },
+    {
+      "missing_field": "UseFilter",
+      "rejected": true
+    },
+    {
+      "missing_field": "InitialConditionForIntegrator",
+      "rejected": true
+    },
+    {
+      "missing_field": "InitialConditionForFilter",
+      "rejected": true
+    },
+    {
+      "missing_field": "IntegratorMethod",
+      "rejected": true
+    },
+    {
+      "missing_field": "FilterMethod",
+      "rejected": true
+    },
+    {
+      "missing_field": "SampleTime",
+      "rejected": true
+    },
+    {
+      "missing_field": "ExternalReset",
+      "rejected": true
+    },
+    {
+      "missing_field": "ControllerParametersSource",
+      "rejected": true
+    },
+    {
+      "missing_field": "InitialConditionSource",
+      "rejected": true
+    },
+    {
+      "missing_field": "LimitIntegrator",
+      "rejected": true
+    },
+    {
+      "missing_field": "UseExternalTs",
+      "rejected": true
+    },
+    {
+      "missing_field": "UpperIntegratorSaturationLimit",
+      "rejected": true
+    },
+    {
+      "missing_field": "LowerIntegratorSaturationLimit",
+      "rejected": true
+    }
+  ],
+  "native_parameter_access": "UNVERIFIED",
+  "native_construction": "UNVERIFIED"
+}

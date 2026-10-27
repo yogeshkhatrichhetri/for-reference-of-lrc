@@ -1,0 +1,7 @@
+{
+  "classification": "STATIC_SOURCE_FIXTURE_NOT_MATLAB_RUNTIME",
+  "fixture": "Unchanged V4 builder in temporary copy",
+  "result": "PASS: old parameter expectation rejected",
+  "returncode": 1,
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/p4_v5_parameter_regression_41i_0w89/fixture/tools/test_native_parameters_static.py\", line 13, in <module>\n    check('required_'+key,key in required)\n  File \"/tmp/p4_v5_parameter_regression_41i_0w89/fixture/tools/test_native_parameters_static.py\", line 7, in check\n    assert value,name\n           ^^^^^\nAssertionError: required_LimitIntegrator\n"
+}

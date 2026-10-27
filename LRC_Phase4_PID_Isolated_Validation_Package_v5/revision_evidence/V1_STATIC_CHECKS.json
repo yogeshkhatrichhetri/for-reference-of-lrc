@@ -1,0 +1,81 @@
+{
+  "classification": "STATIC_PACKAGE_CHECKS_ONLY",
+  "checks": [
+    {
+      "check": "historical_byte_preservation",
+      "status": "PASS",
+      "evidence": "125 files unchanged"
+    },
+    {
+      "check": "source_identity",
+      "status": "PASS",
+      "evidence": "Exact real source SLX bytes, not a substitute"
+    },
+    {
+      "check": "master_identity",
+      "status": "PASS",
+      "evidence": "Authoritative master SHA-256"
+    },
+    {
+      "check": "MATLAB_independent_syntax_parse",
+      "status": "PASS",
+      "evidence": "MISS_HIT 0.9.44\nMISS_HIT Style Summary: 12 file(s) analysed, everything seems fine"
+    },
+    {
+      "check": "Python_syntax",
+      "status": "PASS",
+      "evidence": "Two tools parsed with Python ast; no simulator execution"
+    },
+    {
+      "check": "port_path_regression",
+      "status": "PASS",
+      "evidence": "Explicit supported In1/Out1 library mapping"
+    },
+    {
+      "check": "frozen_candidate_literals",
+      "status": "PASS",
+      "evidence": "Exact requested literals present; no tuning/search code"
+    },
+    {
+      "check": "no_generated_experiment_model",
+      "status": "PASS",
+      "evidence": "Only genuine baseline SLX included; experiment not generated"
+    },
+    {
+      "check": "owner_execution_default_off",
+      "status": "PASS",
+      "evidence": "Separate execution instruction required"
+    },
+    {
+      "check": "component_manifest_positive",
+      "status": "PASS",
+      "evidence": "Static package integrity PASS: 35 component hashes; exact current model and master identity.\nTEST_REGISTER SHA-256: 3266c05c4321ffada671fb41c1a15f901309a2236cf98bcb2a933209d869d9f2\nNative construction, simulation, equivalence and acceptance remain UNVERIFIED. Overall NOT ACCEPTED."
+    },
+    {
+      "check": "modified_component_rejected",
+      "status": "PASS",
+      "evidence": "INTEGRITY FAILURE: Hash mismatch: README.md"
+    },
+    {
+      "check": "missing_component_rejected",
+      "status": "PASS",
+      "evidence": "INTEGRITY FAILURE: Missing or linked file: matlab/p4_constants.m"
+    },
+    {
+      "check": "collector_overwrite_rejected",
+      "status": "PASS",
+      "evidence": "COLLECTION FAILURE: Output must be new and outside result directory"
+    },
+    {
+      "check": "collector_missing_evidence_rejected",
+      "status": "PASS",
+      "evidence": "COLLECTION FAILURE: Empty or linked result tree"
+    }
+  ],
+  "MATLAB_or_Simulink_executed": false,
+  "native_compile": "UNVERIFIED",
+  "native_simulation": "UNVERIFIED",
+  "native_equivalence": "UNVERIFIED",
+  "phase4_complete": false,
+  "overall_project": "NOT ACCEPTED"
+}

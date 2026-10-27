@@ -1,0 +1,29 @@
+{
+  "classification": "STATIC_PREPARATION_ONLY",
+  "final_component_count": 49,
+  "final_archive_file_entries": 50,
+  "v1_component_verification": {
+    "count": 36,
+    "status": "PASS",
+    "stale_preliminary_record_count": 35
+  },
+  "MATLAB_syntax": {
+    "parser": "MISS_HIT 0.9.44",
+    "files": 13,
+    "status": "PASS",
+    "log": "revision_evidence/MATLAB_SYNTAX_LOG.txt"
+  },
+  "authorization_static_predicates": {
+    "cases": 12,
+    "status": "PASS",
+    "log": "revision_evidence/AUTHORIZATION_STATIC_TESTS.json",
+    "native_runtime": "UNVERIFIED"
+  },
+  "final_integrity_log": "revision_evidence/FINAL_VERIFIER_LOG.txt",
+  "baseline_preservation": "revision_evidence/V2_PRESERVATION.json",
+  "MATLAB_or_Simulink_executed": false,
+  "native_compile": "UNVERIFIED",
+  "native_simulation": "UNVERIFIED",
+  "native_equivalence": "UNVERIFIED",
+  "overall_project": "NOT ACCEPTED"
+}

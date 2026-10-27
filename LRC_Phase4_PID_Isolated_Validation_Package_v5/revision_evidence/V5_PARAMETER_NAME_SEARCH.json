@@ -1,0 +1,27 @@
+{
+  "term": "LimitIntegratorOutput",
+  "executable_builder_occurrences": 0,
+  "remaining_mentions": [
+    {
+      "path": "V5_LOCAL_PARAMETER_CORRECTION_ADDENDUM.md",
+      "occurrences": 2,
+      "classification": "historical/explanatory expectation or exact source diff"
+    },
+    {
+      "path": "revision_evidence/V4_ARCHITECTURE_AND_SEMANTICS.md",
+      "occurrences": 1,
+      "classification": "historical/explanatory expectation or exact source diff"
+    },
+    {
+      "path": "revision_evidence/V5_SOURCE_DIFF.patch",
+      "occurrences": 4,
+      "classification": "historical/explanatory expectation or exact source diff"
+    },
+    {
+      "path": "tools/test_native_parameters_static.py",
+      "occurrences": 1,
+      "classification": "negative assertion forbids failed name; not native configuration"
+    }
+  ],
+  "current_architecture_statement_corrected": true
+}

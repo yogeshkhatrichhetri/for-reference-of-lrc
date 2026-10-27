@@ -1,0 +1,1764 @@
+# MASTER EXECUTION PROMPT
+# SERIES LRC CIRCUIT: FIRST-PRINCIPLES MODELING, SIMULINK
+# IMPLEMENTATION, PID CONTROLLER DESIGN, AND RIGOROUS VALIDATION
+
+====================================================================
+1. ROLE, MISSION, AND ENGINEERING STANDARD
+====================================================================
+
+Act as a Senior Control Systems Engineer, MATLAB/Simulink Architect,
+and Control-System Verification Specialist.
+
+Your mission is to design, programmatically construct, simulate, validate,
+and deliver a complete, executable Simulink model of a Series LRC Circuit
+with Inductor Equivalent Series Resistance (ESR), together with P, PI,
+and PID feedback controllers.
+
+The implementation must be grounded in the University of Michigan's
+Control Tutorials for MATLAB and Simulink (CTMS), specifically:
+
+https://ctms.engin.umich.edu/CTMS/index.php?aux=Activities_LRCcircuitA
+
+Treat the linked CTMS documentation as the primary reference for the
+circuit configuration, physical parameters, governing equations, and
+applicable experimental conditions.
+
+FIRST ACTION:
+Inspect the linked reference and establish the exact specifications
+applicable to this implementation. Compare them with the specifications
+provided below.
+
+If the website is inaccessible, explicitly disclose that limitation.
+Do not pretend to have verified information you could not access.
+
+If any supplied parameter or statement conflicts with CTMS, document
+the discrepancy. Preserve the user-specified design parameters unless
+a change is mathematically necessary, and explain any such change.
+
+Do not silently invent physical parameters or attribute assumptions
+to CTMS.
+
+The final result must be a working engineering artifact, not merely
+an explanation, a collection of MATLAB snippets, or a static diagram.
+
+Produce the actual files:
+
+1. init_lrc_pid.m
+2. LRC_PID_Control.slx
+3. README.md
+4. A concise engineering verification report documenting analytical
+   results, simulation results, limitations, and execution instructions.
+
+If MATLAB and Simulink are available in the execution environment,
+construct and run the model there.
+
+If execution is unavailable, provide the strongest possible implementation
+and explicitly distinguish untested functionality from verified results.
+Never claim successful simulation without actual evidence.
+
+
+====================================================================
+2. NON-NEGOTIABLE ARCHITECTURAL REQUIREMENTS
+====================================================================
+
+2.1. Simulink must contain the actual system
+
+The physical plant, feedback loops, PID algorithms, controller comparisons,
+actuator saturation, disturbance injection, and primary response
+visualization must be implemented natively in Simulink.
+
+MATLAB is permitted for:
+
+- Defining physical parameters and controller gains.
+- Calculating theoretical parameters and expected plant characteristics.
+- Programmatically creating and configuring Simulink blocks.
+- Connecting blocks and configuring the model.
+- Setting simulation parameters.
+- Saving and opening the model and its Scopes.
+- Performing analytical checks and numerical verification.
+- Reporting simulation results and identifying failures.
+
+The distinction between MATLAB and Simulink is architectural, not an
+arbitrary percentage of source-code lines.
+
+Do not implement the circuit dynamics or feedback controller as ordinary
+MATLAB simulation loops outside Simulink.
+
+2.2. Prohibited substitutes for the actual implementation
+
+Do not:
+
+- Substitute screenshots for an executable Simulink model.
+- Use MATLAB step(), lsim(), or plot() to generate the primary
+  response plots.
+- Use MATLAB figures as substitutes for native Simulink Scopes.
+- Use To Workspace blocks as the primary visualization mechanism.
+- Claim that two models are equivalent merely because they look similar.
+- Claim that the controller meets specifications without checking
+  actual simulation results.
+- leave unconnected blocks, unresolved signal paths, undefined variables,
+  missing dependencies, or unexplained configuration errors.
+- conceal unsuccessful simulation runs.
+
+Signal logging or numerical extraction may be used for automated
+verification, provided the primary visualization remains inside
+native Simulink Scope blocks.
+
+2.3. Programmatic construction is mandatory
+
+Create the model using MATLAB/Simulink APIs, including appropriate
+uses of:
+
+new_system
+open_system
+add_block
+add_line
+set_param
+save_system
+
+Use additional supported APIs where necessary.
+
+The initialization script must construct the complete model rather
+than relying on a manually assembled diagram.
+
+The delivered .slx file must subsequently open and run independently
+of the model-building process.
+
+Build the model so that it can be regenerated reproducibly from the
+initialization script.
+
+
+====================================================================
+3. EXACT PHYSICAL SYSTEM SPECIFICATIONS
+====================================================================
+
+Use the following values as the baseline configuration.
+
+Resistor resistance:
+    R = 10 ohms
+
+Inductor equivalent series resistance:
+    R_eq = 40 ohms
+
+Inductance:
+    L = 1 H
+
+Capacitance:
+    C = 510e-6 F
+
+Input step voltage:
+    E_step = 1.53 V
+
+CTMS validation step time:
+    t_step = 1.22 s
+
+Ordinary step-response comparison:
+    t_step = 0 s
+
+Discrete controller sampling time:
+    Ts = 0.01 s
+
+Default baseline simulation window:
+    0 to 1.0 s
+
+Maximum continuous-plant solver step:
+    0.001 s
+
+The CTMS validation scenario must run for at least one second after
+the specified input step. Therefore, its simulation stop time must
+be at least 2.22 s.
+
+The ordinary control-comparison simulation and the delayed CTMS
+validation simulation are distinct test scenarios. Do not attempt
+to execute the delayed 1.22-second step inside a 1.0-second simulation.
+
+Define a configurable total series resistance:
+
+    R_total = R + R_eq
+
+Use double-precision parameters and sensible signal naming throughout
+the model.
+
+
+====================================================================
+4. GOVERNING PHYSICS: DERIVE BEFORE BUILDING
+====================================================================
+
+4.1. Kirchhoff's Voltage Law
+
+The physical circuit is governed by:
+
+    e_i(t) - R*i(t) - R_eq*i(t) - L*di(t)/dt - e_o(t) = 0
+
+Equivalently:
+
+    L*di(t)/dt = e_i(t) - R_total*i(t) - e_o(t)
+
+For the original series circuit, where the same current flows through
+the resistor, inductor, and capacitor:
+
+    i_C(t) = i(t)
+
+    C*de_o(t)/dt = i(t)
+
+Therefore:
+
+    di(t)/dt = [e_i(t) - R_total*i(t) - e_o(t)] / L
+
+    de_o(t)/dt = i(t)/C
+
+These equations must be implemented correctly in the first-principles
+Simulink plant.
+
+4.2. Canonical transfer function
+
+With zero initial conditions:
+
+    G(s) = E_o(s) / E_i(s)
+
+         = 1 / [L*C*s^2 + R_total*C*s + 1]
+
+Equivalently:
+
+    G(s) = (1/L/C) /
+           [s^2 + (R_total/L)*s + 1/(L*C)]
+
+Using the supplied parameters:
+
+    R_total = 50 ohms
+
+    L*C = 0.00051
+
+    R_total*C = 0.0255
+
+Therefore:
+
+    G(s) = 1 / (0.00051*s^2 + 0.0255*s + 1)
+
+         = 1960.784314 /
+           (s^2 + 50*s + 1960.784314)
+
+Implement this canonical model using a native Simulink Transfer Fcn
+block.
+
+Do not use this Transfer Fcn block as a substitute for the separate
+first-principles implementation.
+
+
+====================================================================
+5. ANALYTICAL BASELINE: INDEPENDENTLY VERIFY THE NUMBERS
+====================================================================
+
+Before controller tuning, calculate the theoretical open-loop
+characteristics.
+
+Natural frequency:
+
+    omega_n = sqrt(1/(L*C))
+
+Expected value:
+
+    omega_n approximately 44.28 rad/s
+
+Damping ratio:
+
+    zeta = R_total/2 * sqrt(C/L)
+
+Expected value:
+
+    zeta approximately 0.5646
+
+Damped natural frequency:
+
+    omega_d = omega_n*sqrt(1 - zeta^2)
+
+Expected value:
+
+    omega_d approximately 36.55 rad/s
+
+Underdamped open-loop poles:
+
+    s = -zeta*omega_n +/- j*omega_d
+
+Expected approximately:
+
+    s = -25 +/- j*36.55
+
+Peak time for the standard second-order step response:
+
+    t_p = pi/omega_d
+
+Expected value:
+
+    t_p approximately 0.086 s
+
+Percentage overshoot:
+
+    Mp_percent = 100*exp(-zeta*pi/sqrt(1-zeta^2))
+
+Expected value:
+
+    Mp_percent approximately 11.7%
+
+DC gain:
+
+    G(0) = 1
+
+These are analytical checks, not fabricated simulation measurements.
+
+Calculate them independently and print the numerical results in the
+MATLAB Command Window.
+
+Check the calculated poles against the transfer-function denominator.
+
+If the calculated results differ materially from the expected
+values, stop and investigate the discrepancy before implementing
+the controller.
+
+Do not proceed with controller tuning while the baseline plant
+contains an unresolved mathematical inconsistency.
+
+
+====================================================================
+6. REQUIRED MATLAB INITIALIZATION SCRIPT
+====================================================================
+
+Create:
+
+    init_lrc_pid.m
+
+This script must be self-contained, reproducible, and sufficiently
+robust to execute from a clean MATLAB session.
+
+6.1. Initialization responsibilities
+
+The script must:
+
+1. Define all physical parameters.
+2. Define the controller gains and derivative filter parameters.
+3. Define the actuator saturation limits.
+4. Define the relevant simulation configuration.
+5. Calculate the canonical parameters.
+6. Print the analytical verification results.
+7. Construct the complete Simulink model.
+8. Configure solver and controller sample times.
+9. Configure and connect all required blocks.
+10. Save LRC_PID_Control.slx.
+11. Open the Simulink model.
+12. Open all required Scope windows.
+
+Use the script's own directory to resolve project-relative paths.
+Do not assume that MATLAB's current working directory happens to
+be the correct project directory.
+
+Make repeated execution safe and deterministic.
+
+Do not silently overwrite unrelated user files.
+
+6.2. Required workspace variables
+
+At minimum, define:
+
+    R
+    R_eq
+    R_total
+    L
+    C
+    E_step
+    Ts
+
+    Kp_P
+    Kp_PI
+    Ki_PI
+    Kp_PID
+    Ki_PID
+    Kd_PID
+    N_PID
+
+    U_min
+    U_max
+
+    t_ref_step
+    t_ei_step
+    t_load_step
+    I_load_step
+
+Use additional variables where justified.
+
+The physical constants must have one authoritative definition.
+Avoid duplicate numerical literals scattered throughout the model.
+
+6.3. Execution behavior
+
+On execution, the script must:
+
+- Print the canonical baseline results.
+- Build and save the model.
+- Open the model canvas.
+- Open the native Scope windows.
+- Display clear instructions for running the chosen test scenario.
+
+Configure Scope behavior so that the Scopes also open automatically
+when simulation begins.
+
+The model must retain its structure and saved configuration even
+after the initialization script finishes.
+
+6.4. Compatibility
+
+Check the available MATLAB/Simulink release and relevant block
+capabilities before setting version-dependent parameters.
+
+Use supported APIs and block parameters.
+
+If a desired Scope property or controller parameter differs between
+releases, use a documented compatible alternative.
+
+Do not conceal unsupported parameters or silently omit required
+functionality to avoid an error.
+
+
+====================================================================
+7. COMPLETE SIMULINK MODEL ARCHITECTURE
+====================================================================
+
+Create:
+
+    LRC_PID_Control.slx
+
+Organize the model into clearly labelled, visually separated
+subsystems.
+
+The primary canvas must contain:
+
+A. First-Principles Plant
+B. Canonical Transfer Function Plant
+C. Closed-Loop Controller Comparisons
+D. Native Versus Explicit PID Implementation Comparison
+E. Disturbance-Injection and Test-Configuration Signals
+F. Native Scope-Based Visualization
+
+Use meaningful subsystem names, signal labels, annotations, and
+consistent signal routing.
+
+Do not create a single enormous, unreadable collection of blocks.
+
+Use the same physical parameters throughout all equivalent models.
+
+
+--------------------------------------------------------------------
+7A. SUBSYSTEM A: FIRST-PRINCIPLES LRC PLANT
+--------------------------------------------------------------------
+
+Name:
+
+    First_Principles_LRC_Plant
+
+Implement the physical equations directly using native Simulink
+blocks.
+
+Required blocks include:
+
+- Sum
+- Gain
+- Integrator
+- Appropriate signal-routing blocks
+
+Implement:
+
+    di/dt = (e_i - R_total*i - e_o)/L
+
+    de_o/dt = i/C
+
+Recommended signal flow:
+
+    Input voltage e_i
+          |
+          v
+    KVL summation
+          |
+          v
+        Gain 1/L
+          |
+          v
+    Integrator: di/dt -> i
+          |
+          +-----------------------------+
+          |                             |
+          v                             v
+    Resistance feedback             Gain 1/C
+    -R_total*i                          |
+                                        v
+                                  Integrator
+                                  i/C -> e_o
+                                        |
+                                        +---- capacitive voltage
+                                              feedback to KVL Sum
+
+Construct the actual connections correctly; the diagram above
+expresses the intended signal relationships.
+
+Use the appropriate feedback polarity and verify every Sum block's
+sign configuration.
+
+Provide externally accessible outputs for:
+
+    e_o(t)
+    i(t)
+
+Also expose any additional internal variables necessary for
+verification.
+
+Set all integrator initial conditions to zero for the baseline
+zero-initial-condition experiments.
+
+Use descriptive signal names.
+
+CRITICAL:
+
+The output voltage must arise from integrating the capacitor's
+voltage derivative. Do not replace the physical equations with a
+Transfer Fcn block inside this subsystem.
+
+Verify the integrator and feedback connections mathematically.
+
+
+--------------------------------------------------------------------
+7B. SUBSYSTEM B: CANONICAL TRANSFER FUNCTION PLANT
+--------------------------------------------------------------------
+
+Name:
+
+    Canonical_Transfer_Function_Plant
+
+Implement:
+
+    G(s) = 1/(L*C*s^2 + R_total*C*s + 1)
+
+Use a native Transfer Fcn block.
+
+Configure its numerator and denominator from the workspace variables.
+
+Provide outputs for:
+
+    e_o_TF(t)
+
+Use zero initial conditions consistent with the first-principles
+plant.
+
+Feed the first-principles plant and transfer-function plant with
+identical input signals during their equivalence tests.
+
+Compare their outputs directly inside Simulink.
+
+
+--------------------------------------------------------------------
+7C. SUBSYSTEM C: CLOSED-LOOP CONTROLLER COMPARISON
+--------------------------------------------------------------------
+
+Name:
+
+    Closed_Loop_Controller_Comparison
+
+Implement three independent, parallel feedback loops:
+
+    1. P controller
+    2. PI controller
+    3. PID controller
+
+Each loop must have its own controller and corresponding plant
+instance. Do not connect several controllers to the same plant input
+at the same time.
+
+Use an independently controlled and physically identical LRC plant
+for each comparison branch.
+
+Each loop must contain:
+
+    Reference
+       |
+       v
+    Error summation
+       |
+       v
+    Controller
+       |
+       v
+    Raw control effort u_raw
+       |
+       v
+    Saturation
+       |
+       v
+    Applied input voltage u
+       |
+       v
+    LRC plant
+       |
+       v
+    Capacitor voltage e_o
+       |
+       +------ negative feedback to the error summation
+
+Define:
+
+    e(t) = e_ref(t) - e_o(t)
+
+Use:
+
+    e_ref(t) = 1.53 V
+
+for the ordinary tracking experiment.
+
+The objective is to regulate the capacitor voltage to the reference
+while controlling overshoot, settling time, steady-state error, and
+disturbance sensitivity.
+
+P, PI, and PID responses must be computed simultaneously in parallel
+so that their comparisons are fair and reproducible.
+
+Do not rely on manually changing controller gains and rerunning
+three unrelated models.
+
+The comparison subsystem must expose:
+
+    Reference voltage
+    P-controller output voltage
+    PI-controller output voltage
+    PID-controller output voltage
+    P-controller error
+    PI-controller error
+    PID-controller error
+
+Also expose the relevant controller efforts and physical plant
+currents for verification.
+
+
+--------------------------------------------------------------------
+7D. ACTUATOR SATURATION AND ANTI-WINDUP
+--------------------------------------------------------------------
+
+Use an explicit Saturation block at each controlled plant input.
+
+Initial configurable limits:
+
+    U_min = -5 V
+
+    U_max = +5 V
+
+Treat these values as an assumed actuator constraint for this
+simulation unless the authoritative source confirms otherwise.
+
+Clearly label them as configurable engineering assumptions.
+
+The control law must not bypass the Saturation block.
+
+For PI and PID controllers, implement appropriate anti-windup
+protection, such as a supported built-in anti-windup method or a
+mathematically correct external back-calculation/clamping structure.
+
+Do not implement an anti-windup label without the corresponding
+functional logic.
+
+Provide access to:
+
+    u_raw(t): controller output before saturation
+
+    u(t): actuator input after saturation
+
+Verify the relationship between the two signals.
+
+Check whether saturation occurs during the transient.
+
+If saturation occurs, inspect the integrator behavior and demonstrate
+that the controller recovers without persistent windup.
+
+If saturation prevents the prescribed performance targets from
+being achieved, report that fact rather than concealing it.
+
+
+--------------------------------------------------------------------
+7E. NATIVE PID BLOCK VERSUS EXPLICIT PID
+--------------------------------------------------------------------
+
+Implement two independently verifiable PID structures:
+
+    A. Explicit PID built from elementary Simulink blocks.
+
+    B. Native Simulink PID Controller block.
+
+The explicit PID must use a parallel structure with:
+
+    Proportional path
+    Integral path
+    Filtered derivative path
+    Summation
+    Appropriate anti-windup
+    Output saturation
+
+Use the same gains, control convention, saturation limits, initial
+conditions, derivative convention, and sample-time configuration
+when comparing the implementations.
+
+The filtered derivative should be mathematically consistent with:
+
+    D(s) = Kd*N*s/(s + N)
+
+Do not use an unfiltered ideal derivative if the native block is
+configured to use a derivative filter.
+
+Ensure that the explicit and native controllers use compatible
+derivative-on-error or derivative-on-measurement behavior.
+
+Avoid an unintended derivative kick at the reference step. If
+derivative-on-measurement is selected, implement the corresponding
+signal routing correctly.
+
+The comparison must verify both output trajectories and control
+efforts.
+
+Add an additional Scope if necessary to present the comparison
+clearly without overloading the three primary Scopes.
+
+A Manual Switch may be included for controller selection, but it
+must not replace the simultaneous comparison required for the
+verification tests.
+
+
+====================================================================
+8. LOAD-DISTURBANCE MODELING
+====================================================================
+
+A disturbance must have an explicitly defined physical injection
+point and mathematically consistent implementation.
+
+Do not refer to an arbitrary additive voltage step as a load
+disturbance.
+
+Use a configurable load-current disturbance at the capacitor
+output node.
+
+If the disturbance is modeled as a load current drawn from the
+capacitor node, modify the capacitor equation to:
+
+    C*de_o/dt = i_series - i_load
+
+Therefore:
+
+    de_o/dt = (i_series - i_load)/C
+
+The inductor/resistor branch continues to satisfy:
+
+    L*di_series/dt = e_i - R_total*i_series - e_o
+
+When:
+
+    i_load = 0
+
+the system must reduce to the original CTMS series LRC model.
+
+When:
+
+    i_load > 0
+
+the load draws current from the output node and perturbs the
+capacitor voltage.
+
+The disturbance must be injected at the capacitor-node current
+balance, not at an arbitrary location in the inductor equation.
+
+Implement the disturbance using native Simulink blocks, such as
+Step, Sum, and Gain, with a configurable amplitude and application
+time.
+
+Use a documented, configurable illustrative disturbance amplitude
+if CTMS does not specify one. Clearly distinguish this assumption
+from the source specifications.
+
+Use separate simulation runs for:
+
+    Scenario 1: No disturbance; establish controller tracking
+               performance.
+
+    Scenario 2: Apply a load-current disturbance; evaluate
+               disturbance rejection and recovery.
+
+The baseline performance measurements must not be conflated with
+the disturbance-rejection measurements.
+
+In the disturbance experiment, compare how the P, PI, and PID
+controllers respond to the same disturbance under equivalent
+initial conditions and actuator constraints.
+
+Verify that the model's disturbance path matches the governing
+differential equations.
+
+
+====================================================================
+9. THREE MANDATORY NATIVE SIMULINK SCOPES
+====================================================================
+
+All primary response visualizations must appear in native Simulink
+Scope windows.
+
+The Scope blocks must be present in the saved .slx file.
+
+They must not depend on MATLAB figure generation.
+
+Programmatically configure and open the Scopes using supported
+block parameters and documented APIs.
+
+Where available, configure:
+
+    NumInputPorts
+    LayoutDimensions
+    ShowLegend
+    OpenAtSimulationStart
+
+Also configure:
+
+    Gridlines
+    Signal names
+    Appropriate time span
+    Sensible axis scaling
+    Readable trace separation
+    Clear subplot layouts
+
+If a property differs between MATLAB releases, identify and use
+the appropriate documented alternative.
+
+Preserve enough model organization and signal naming that each
+trace can be identified without guesswork.
+
+
+--------------------------------------------------------------------
+SCOPE 1: MODEL VALIDATION
+--------------------------------------------------------------------
+
+Name:
+
+    Model_Validation_Scope
+
+Purpose:
+
+    Demonstrate the equivalence of the first-principles LRC model
+    and the canonical transfer-function model.
+
+Display at least three traces:
+
+    1. Reference/input step voltage
+    2. First-principles plant output e_o(t)
+    3. Transfer-function plant output e_o_TF(t)
+
+Apply identical input signals to both plant implementations.
+
+Use a clearly labelled common time axis.
+
+The two plant outputs should overlap to within a justified
+numerical tolerance.
+
+Do not describe them as mathematically equivalent simply because
+the plots appear visually similar.
+
+Verify the signals quantitatively using suitable numerical
+verification, including a maximum absolute difference:
+
+    E_max = max(abs(e_o_first_principles - e_o_TF))
+
+Use simulation signal data for this numerical check if necessary.
+
+State the tolerance, the measured discrepancy, and whether the
+criterion passed.
+
+Explain any discrepancy caused by solver tolerances, initialization,
+or implementation differences.
+
+
+--------------------------------------------------------------------
+SCOPE 2: OPEN-LOOP VERSUS CLOSED-LOOP PERFORMANCE
+--------------------------------------------------------------------
+
+Name:
+
+    Open_vs_Closed_Loop_PID_Scope
+
+Display the following signals on a common, readable voltage-versus-time
+plot:
+
+    1. Reference voltage: e_ref(t)
+    2. Open-loop LRC output
+    3. P-controlled output
+    4. PI-controlled output
+    5. PID-controlled output
+
+The reference and open-loop branches must use the same input-step
+amplitude and compatible initial conditions.
+
+Use the same plant parameters in all branches.
+
+The open-loop trace must demonstrate the expected underdamped
+response.
+
+The P, PI, and PID traces must show the actual simulated outputs
+under their respective controllers.
+
+The plot must make it easy to assess:
+
+    Rise time
+    Peak overshoot
+    Settling time
+    Steady-state error
+    Relative damping
+    Relative tracking performance
+
+Ensure the legend uses meaningful signal names.
+
+Do not claim that P, PI, and PID all have zero steady-state error.
+
+For a stable, unsaturated system tracking a constant reference,
+integral action in PI/PID can eliminate steady-state error, while
+a proportional-only controller will generally retain a nonzero
+error.
+
+Any deviation from these expectations must be investigated and
+explained.
+
+
+--------------------------------------------------------------------
+SCOPE 3: INTERNAL STATES, ERROR, AND CONTROL EFFORT
+--------------------------------------------------------------------
+
+Name:
+
+    Internal_States_and_Control_Effort_Scope
+
+Configure a three-subplot layout.
+
+SUBPLOT 1: TRACKING ERROR
+
+Display:
+
+    e(t) = e_ref(t) - e_o(t)
+
+For the primary PID tracking experiment, show the actual tracking
+error associated with the PID-controlled plant.
+
+Include the reference and output signal names needed to interpret
+the error correctly.
+
+SUBPLOT 2: CONTROL EFFORT
+
+Display:
+
+    u_raw(t): controller output before saturation
+
+    u(t): actual applied input voltage after saturation
+
+Use suitable units and visible saturation limits.
+
+The difference between these traces must make saturation behavior
+immediately identifiable.
+
+SUBPLOT 3: PHYSICAL CURRENT
+
+Display:
+
+    i_series(t): current through the series resistor and inductor
+
+Tap the signal directly from the first-principles plant or its
+physically correct controlled equivalent.
+
+Do not substitute controller output voltage for current.
+
+The Scope must provide meaningful access to all three quantities
+without requiring the user to inspect MATLAB figures.
+
+
+====================================================================
+10. PID GAIN DESIGN: ANALYTICAL DERIVATION REQUIRED
+====================================================================
+
+Do not select Kp, Ki, Kd, or N arbitrarily.
+
+Derive and explain the controller parameters before finalizing
+the Simulink implementation.
+
+Use pole placement, desired characteristic-polynomial matching,
+or another mathematically justified method.
+
+10.1. Start with the canonical plant
+
+    G(s) = 1/D(s)
+
+where:
+
+    D(s) = L*C*s^2 + R_total*C*s + 1
+
+10.2. Establish the ideal parallel PID relationship
+
+For an ideal, unfiltered parallel PID:
+
+    C_PID(s) = Kp + Ki/s + Kd*s
+
+Under unity negative feedback, the closed-loop characteristic
+polynomial is:
+
+    L*C*s^3
+    + (R_total*C + Kd)*s^2
+    + (1 + Kp)*s
+    + Ki
+    = 0
+
+Use this relationship to establish a transparent analytical
+starting point for pole placement.
+
+If the desired monic cubic polynomial is:
+
+    s^3 + a2*s^2 + a1*s + a0
+
+then the corresponding ideal-PID coefficient relationships are:
+
+    Kd = L*C*a2 - R_total*C
+
+    Kp = L*C*a1 - 1
+
+    Ki = L*C*a0
+
+Check dimensional consistency and ensure that the resulting
+characteristic polynomial has the intended coefficients.
+
+These formulas apply to the ideal, unfiltered parallel PID model.
+Do not blindly apply them to a filtered derivative implementation
+and claim exact pole matching.
+
+10.3. Account for derivative filtering
+
+The practical derivative path is:
+
+    D(s) = Kd*N*s/(s + N)
+
+When derivative filtering is used, account for the additional
+dynamics introduced by the filter.
+
+For this filtered controller, the unity-feedback characteristic
+equation can be written as:
+
+    s*(s + N)*D(s)
+    + Kp*s*(s + N)
+    + Ki*(s + N)
+    + Kd*N*s^2
+    = 0
+
+Expand this expression and show how N, Kp, Ki, and Kd influence
+the resulting closed-loop polynomial.
+
+Use the appropriate filtered model for final verification.
+
+Do not report exact pole placement when the implemented filtered
+controller has not actually been matched to the stated polynomial.
+
+10.4. Choose desired closed-loop behavior
+
+The design must prioritize:
+
+    - Stable closed-loop dynamics
+    - Peak overshoot below 2%
+    - Settling time below 0.05 s
+    - Negligible steady-state error under the stated conditions
+    - Acceptable control effort
+    - No persistent integrator windup
+    - Recovery from the specified load disturbance
+
+Select appropriate desired poles or performance specifications
+before calculating the final gains.
+
+Report the desired pole locations, the resulting controller gains,
+and the reasoning behind the derivative-filter coefficient.
+
+Consider the actuator saturation during tuning.
+
+If the analytically designed gains produce excessive control
+effort or fail under saturation, refine the design while preserving
+a documented mathematical basis.
+
+If exact analytical matching conflicts with the filter, saturation,
+or discrete sampling constraints, make that limitation explicit.
+
+Do not invent gain values and then construct a derivation intended
+to justify them retrospectively.
+
+10.5. Required gain report
+
+Document:
+
+    Kp
+    Ki
+    Kd
+    N
+
+Also document:
+
+    Desired closed-loop poles
+    Calculated characteristic polynomial
+    Assumptions and approximations
+    Derivative-filter implementation
+    Anti-windup method
+    Saturation limits
+    Predicted response characteristics
+    Actual simulated response characteristics
+
+The delivered workspace variables must use the same gains that
+are documented in the report and applied in the Simulink blocks.
+
+
+====================================================================
+11. CONTINUOUS-TIME AND DISCRETE-TIME VERIFICATION
+====================================================================
+
+The physical circuit is continuous-time.
+
+The supplied digital controller sampling time is:
+
+    Ts = 0.01 s
+
+Do not confuse the continuous physical plant with the sampling
+behavior of a discrete controller.
+
+11.1. Primary continuous-time simulation
+
+Use a continuous-time plant with an appropriate solver.
+
+Configure the maximum solver step to be no greater than:
+
+    0.001 s
+
+A suitable fixed-step configuration or a variable-step solver
+with an appropriate maximum step may be used.
+
+The continuous-time response must be sufficiently resolved to
+measure the expected open-loop peak near 0.086 s and investigate
+the proposed closed-loop settling-time requirement.
+
+11.2. Discrete controller verification
+
+Separately verify a discrete PID implementation using:
+
+    Ts = 0.01 s
+
+Use the supported discrete implementation of the native PID
+Controller block and an equivalent explicit discrete PID structure.
+
+Configure discrete integral and derivative behavior consistently.
+
+Document the discretization method and derivative-filter treatment.
+
+The discrete controller must be sampled at the prescribed sampling
+time, even if the continuous solver uses a smaller integration step.
+
+Compare the discrete and continuous responses and explain any
+meaningful differences.
+
+A 0.01-second sampling period produces only five sampling intervals
+during a 0.05-second response window.
+
+Therefore, report this measurement-resolution limitation when
+evaluating fast transient requirements.
+
+Do not claim that continuous and discrete controllers are identical
+merely because their plots look similar.
+
+
+====================================================================
+12. SIMULATION SCENARIOS AND TEST PROCEDURE
+====================================================================
+
+Provide an explicit, reproducible test procedure.
+
+Use configurable step times and amplitudes so that the appropriate
+simulation scenario can be selected without rewiring the diagram.
+
+SCENARIO A: OPEN-LOOP BASELINE
+
+    Input step: 1.53 V
+    Step time: 0 s
+    Stop time: 1.0 s
+    Load disturbance: Disabled
+
+Verify the theoretical open-loop characteristics.
+
+Expected approximate results:
+
+    Damping ratio:          0.5646
+    Natural frequency:      44.28 rad/s
+    Damped frequency:       36.55 rad/s
+    Peak time:              0.086 s
+    Percentage overshoot:   11.7%
+
+SCENARIO B: PLANT-MODEL EQUIVALENCE
+
+Apply the same input step to both plant implementations.
+
+Run the simulation and compare their output trajectories.
+
+Verify maximum absolute error, steady-state values, and expected
+transient behavior.
+
+SCENARIO C: CLOSED-LOOP CONTROLLER COMPARISON
+
+    Reference: 1.53 V
+    Reference step time: 0 s
+    Load disturbance: Disabled
+    Stop time: 1.0 s
+
+Run the P, PI, and PID branches simultaneously.
+
+Record rise time, peak value, overshoot, settling time, and
+steady-state error.
+
+Check whether the prescribed PID targets are satisfied.
+
+SCENARIO D: LOAD-DISTURBANCE REJECTION
+
+Use the same closed-loop reference and physical plant parameters.
+
+Apply the same documented load-current disturbance to the relevant
+controller branches at a configurable time, initially 0.5 s.
+
+Use the same disturbance amplitude and initial conditions when
+comparing controllers.
+
+Measure the immediate voltage deviation, recovery time, and
+residual steady-state error.
+
+SCENARIO E: CTMS DELAYED-STEP VALIDATION
+
+Configure the applicable CTMS input step at:
+
+    t_step = 1.22 s
+
+Use a stop time of at least:
+
+    t_stop = 2.22 s
+
+Check that the step is actually applied at the specified time.
+
+Compare the first-principles and transfer-function responses
+against the applicable analytical or source-provided reference.
+
+Do not report Scenario E as completed if the simulation stops
+before the input step occurs.
+
+SCENARIO F: DISCRETE PID VERIFICATION
+
+Run the discrete controller with:
+
+    Ts = 0.01 s
+
+Compare its response with the continuous implementation and
+document differences in timing, overshoot, control effort, and
+settling.
+
+Keep the six scenarios clearly distinguished in the verification
+report.
+
+
+====================================================================
+13. QUANTITATIVE ACCEPTANCE CRITERIA
+====================================================================
+
+Define and evaluate explicit acceptance tests.
+
+Do not mark a criterion as passed without supporting numerical
+evidence.
+
+TEST 1: PHYSICAL MODEL CORRECTNESS
+
+Confirm that:
+
+    di/dt = (e_i - R_total*i - e_o)/L
+
+    de_o/dt = i/C
+
+for the original series circuit.
+
+For the load-disturbance variant, confirm that:
+
+    de_o/dt = (i_series - i_load)/C
+
+TEST 2: ANALYTICAL BASELINE
+
+Confirm that the plant parameters reproduce the expected natural
+frequency, damping ratio, poles, peak time, and open-loop overshoot
+within an explicitly defined tolerance.
+
+TEST 3: PLANT EQUIVALENCE
+
+Compare the first-principles and Transfer Fcn outputs.
+
+Report:
+
+    Maximum absolute error
+    Maximum relative error where meaningful
+    Final-value difference
+    Verification tolerance
+    Pass/fail result
+
+TEST 4: CLOSED-LOOP STABILITY
+
+Establish that the implemented closed-loop model is stable under
+the tested operating conditions.
+
+For the analytical linear model, investigate the closed-loop poles
+or characteristic polynomial.
+
+For the implemented nonlinear or saturated model, support the
+assessment with appropriate simulation results.
+
+Do not infer stability from one apparently well-behaved short trace.
+
+TEST 5: OVERSHOOT
+
+Target:
+
+    PID peak overshoot < 2%
+
+Use the final steady-state value and define the overshoot
+calculation explicitly.
+
+For the positive 1.53 V reference, evaluate:
+
+    Mp_percent = 100*(y_peak - y_final)/y_final
+
+when that formula applies to the measured response.
+
+Distinguish a tracking step response from a disturbance-response
+transient.
+
+TEST 6: SETTLING TIME
+
+Target:
+
+    PID settling time < 0.05 s
+
+Use a 2% settling band around the final reference value.
+
+For a 1.53 V final reference, the band is:
+
+    1.53 +/- 0.0306 V
+
+Define settling time as the first time the output enters the band
+and remains within it for the remainder of the relevant baseline
+response.
+
+Do not use the duration of a Scope window as a substitute for
+measuring settling time.
+
+TEST 7: RISE TIME
+
+Report the 10%-to-90% rise time for the reference step.
+
+Do not invent an additional rise-time acceptance threshold if
+none has been specified.
+
+TEST 8: STEADY-STATE ERROR
+
+Report:
+
+    e_ss = e_ref - e_o,final
+
+Evaluate the steady-state error separately for P, PI, and PID.
+
+Explain the effect of integral action.
+
+TEST 9: CONTROL EFFORT
+
+Report the maximum and minimum controller output, whether
+saturation was reached, and the time spent saturated.
+
+Verify anti-windup recovery when applicable.
+
+TEST 10: DISTURBANCE REJECTION
+
+Report:
+
+    Peak deviation from the reference
+    Maximum absolute tracking error
+    Recovery time
+    Residual steady-state error
+
+Define the recovery criterion and tolerance.
+
+TEST 11: CONTROLLER IMPLEMENTATION EQUIVALENCE
+
+Compare the explicit PID with the native PID Controller block
+under matched configurations.
+
+Report output differences and control-effort differences.
+
+Test continuous and discrete configurations separately.
+
+TEST 12: REPRODUCIBILITY
+
+Confirm that the model can be reopened and run from a clean
+MATLAB session using the delivered initialization script.
+
+A test that has not actually been executed must be marked
+UNVERIFIED, not PASS.
+
+
+====================================================================
+14. SIMULINK SCOPE MEASUREMENT WALKTHROUGH
+====================================================================
+
+Provide a practical, step-by-step guide explaining how to use
+the Simulink Scope GUI to examine the results.
+
+The guide must cover:
+
+1. Opening the model and starting a simulation.
+2. Identifying each trace using the legend.
+3. Adjusting the displayed time range.
+4. Zooming into the initial transient.
+5. Using Scope cursors or supported cursor measurements to
+   inspect peak time and peak voltage.
+6. Estimating the final steady-state voltage.
+7. Calculating overshoot from the measured peak.
+8. Measuring rise time from the reference-response trace.
+9. Checking entry into the 2% settling band.
+10. Inspecting the error, raw control effort, saturated effort,
+    and inductor current in Scope 3.
+11. Distinguishing saturation from actual plant instability.
+12. Identifying disturbance application and controller recovery.
+
+Explain the exact GUI controls available in the supported
+MATLAB release.
+
+Do not assume that generic Signal Statistics automatically
+provides correct rise-time, overshoot, or settling-time metrics.
+
+If a Scope utility does not directly provide a required metric,
+explain the correct measurement procedure and any additional
+numerical verification required.
+
+The Scopes must open automatically when the model is executed,
+with sensible initial time axes and readable traces.
+
+Store an appropriate default visualization configuration in
+the model so that reopening the .slx file preserves a useful layout.
+
+
+====================================================================
+15. MODEL QUALITY AND ENGINEERING HYGIENE
+====================================================================
+
+The saved model must meet the following requirements.
+
+15.1. Physical correctness
+
+- Correct KVL signs.
+- Correct resistor and ESR combination.
+- Correct inductance scaling.
+- Correct capacitance scaling.
+- Correct integrator ordering.
+- Correct physical current and voltage definitions.
+- Correct negative feedback.
+- Correct reference scaling.
+- Correct disturbance injection.
+- Correct initial conditions.
+
+15.2. Controller correctness
+
+- P, PI, and PID branches genuinely implement their respective
+  control laws.
+- The derivative filter is mathematically consistent.
+- Integral action is implemented correctly.
+- Anti-windup is functional.
+- Saturation acts on the actual applied plant input.
+- Native and explicit PID implementations use matched conventions.
+- Continuous and discrete configurations are distinguishable.
+- All gains are defined, documented, and reproducible.
+
+15.3. Model organization
+
+- No unexplained magic numbers.
+- No undefined workspace variables.
+- No broken signal connections.
+- No accidental duplicate model inputs.
+- No ambiguous signal names.
+- No misleading block labels.
+- No unnecessary external dependencies.
+- No hidden MATLAB figures as substitutes for Scopes.
+
+15.4. Execution reliability
+
+- The model saves successfully.
+- The initialization script executes from its project directory.
+- The model opens without missing-file errors.
+- The Scopes open correctly.
+- The model runs with the prescribed configuration.
+- All six test scenarios can be reproduced.
+- Simulation outputs are consistent with the reported findings.
+
+15.5. Visual quality
+
+Organize the canvas to communicate the following clearly:
+
+    Physical plant equations
+             |
+             v
+    Canonical plant verification
+             |
+             v
+    Controller comparison
+             |
+             v
+    Saturation and disturbance paths
+             |
+             v
+    Native Scope visualization
+
+The actual subsystem arrangement may differ, but the model must
+remain readable and easy to navigate.
+
+Avoid tangled crossing wires wherever practical.
+
+Use annotations to explain the purpose of important blocks and
+subsystems.
+
+
+====================================================================
+16. FINAL DELIVERABLES
+====================================================================
+
+DELIVERABLE 1: init_lrc_pid.m
+
+A runnable initialization and model-construction script that:
+
+- Defines the required parameters.
+- Calculates and reports canonical characteristics.
+- Builds the entire Simulink model.
+- Configures the solver and controller sampling.
+- Configures the native Scopes.
+- Saves and opens the model.
+
+DELIVERABLE 2: LRC_PID_Control.slx
+
+The complete, executable Simulink model, including:
+
+- First-principles plant.
+- Canonical Transfer Fcn plant.
+- P, PI, and PID closed-loop branches.
+- Explicit PID implementation.
+- Native PID Controller implementation.
+- Saturation and anti-windup.
+- Load-disturbance modeling.
+- Three mandatory native Scopes.
+- Additional Scopes where necessary for clear PID comparison.
+- Meaningful signal labels and annotations.
+
+DELIVERABLE 3: README.md
+
+A clear technical guide explaining:
+
+- Required software and version.
+- How to execute the initialization script.
+- How to open and run the model.
+- How to select the simulation scenarios.
+- Where each important subsystem is located.
+- How to inspect the Scopes.
+- How the controller gains were designed.
+- Known assumptions and limitations.
+
+DELIVERABLE 4: ENGINEERING VERIFICATION REPORT
+
+Provide an organized report covering:
+
+A. System definition and source verification.
+
+B. Governing equations and model architecture.
+
+C. Analytical open-loop characteristics.
+
+D. PID gain derivation.
+
+E. Continuous and discrete implementation differences.
+
+F. Plant-equivalence verification.
+
+G. Open-loop, P, PI, and PID performance comparison.
+
+H. Overshoot, rise-time, and settling-time measurements.
+
+I. Actuator saturation and anti-windup behavior.
+
+J. Load-disturbance rejection.
+
+K. Native-versus-explicit PID comparison.
+
+L. A table of acceptance tests, measured results, tolerances,
+   and pass/fail/unverified status.
+
+M. Any remaining limitations or unresolved failures.
+
+The report must distinguish analytically predicted values from
+actual simulation measurements.
+
+Do not fabricate measurements to complete the report.
+
+
+====================================================================
+17. EXECUTION AND DEBUGGING PROTOCOL
+====================================================================
+
+Follow this order.
+
+PHASE 1: SOURCE AND EQUATION AUDIT
+
+Verify the source specifications.
+
+Derive the governing equations and canonical transfer function.
+
+Calculate and verify the expected poles and transient characteristics.
+
+PHASE 2: OPEN-LOOP MODEL IMPLEMENTATION
+
+Construct the first-principles plant and Transfer Fcn plant.
+
+Run both models.
+
+Verify output equivalence before adding the controller.
+
+PHASE 3: PID DESIGN
+
+Derive the controller gains.
+
+Account for derivative filtering.
+
+Document the intended closed-loop poles.
+
+Consider the saturation constraint before finalizing gains.
+
+PHASE 4: CLOSED-LOOP ARCHITECTURE
+
+Implement the P, PI, and PID branches.
+
+Implement the native and explicit PID versions.
+
+Add functional saturation and anti-windup.
+
+PHASE 5: SCOPE IMPLEMENTATION
+
+Construct, configure, save, and open all mandatory Scope blocks.
+
+Check their legends, layouts, axes, and signal connections.
+
+PHASE 6: SIMULATION
+
+Execute the prescribed scenarios.
+
+Inspect actual output trajectories.
+
+Measure transient characteristics.
+
+Verify disturbance rejection and saturation behavior.
+
+PHASE 7: REPRODUCIBILITY
+
+Restart from a clean MATLAB session when execution access permits.
+
+Run the initialization script.
+
+Reopen and simulate the saved model.
+
+Resolve any broken dependencies or workspace assumptions.
+
+PHASE 8: FINAL AUDIT
+
+Check every acceptance criterion.
+
+Correct implementation errors before declaring the model complete.
+
+If a test fails, identify the underlying cause and make a justified
+correction.
+
+Repeat the affected test after the correction.
+
+If a failure cannot be resolved, report it clearly and preserve the
+evidence needed to understand it.
+
+
+====================================================================
+18. FINAL RESPONSE FORMAT
+====================================================================
+
+After implementation, provide the following in order:
+
+1. EXECUTION SUMMARY
+
+State what was successfully created and executed.
+
+2. DELIVERABLES
+
+Provide direct paths or download links to the actual files.
+
+3. MODEL ARCHITECTURE
+
+Explain the important subsystems and how the feedback paths work.
+
+4. ANALYTICAL RESULTS
+
+Report the open-loop poles, damping ratio, natural frequencies,
+peak time, and theoretical overshoot.
+
+5. PID DESIGN
+
+Show the desired closed-loop poles, characteristic-polynomial
+matching, gain derivation, derivative filter, saturation,
+and anti-windup configuration.
+
+6. SIMULATION RESULTS
+
+Provide measured results for the open-loop, P, PI, and PID branches.
+
+7. VALIDATION TABLE
+
+For each acceptance criterion, state:
+
+    Criterion
+    Expected value or behavior
+    Measured result
+    Pass/fail/unverified
+    Relevant evidence
+
+8. SCOPE USAGE
+
+Explain where the three required Scopes are located, what their
+traces represent, and how to inspect the responses.
+
+9. REMAINING LIMITATIONS
+
+Report unresolved issues, simulation constraints, or unavailable
+verification steps.
+
+FINAL RULE:
+
+Do not finish merely because the script and model files have been
+written.
+
+Finish only after performing the available validation checks and
+reporting their actual outcomes.
+
+A saved file is not proof of correctness.
+
+A plausible plot is not proof of mathematical equivalence.
+
+A stable-looking transient is not sufficient proof of closed-loop
+stability.
+
+A controller gain set is not a successful design unless the
+implemented controller has been evaluated against the specified
+requirements.
+
+The objective is a reproducible, physically correct, executable
+Simulink control-system implementation supported by analytical
+reasoning and numerical verification.

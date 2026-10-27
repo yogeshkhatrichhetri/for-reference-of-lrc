@@ -1,0 +1,3 @@
+Static package integrity PASS: 72 component hashes; exact current model and master identity.
+TEST_REGISTER SHA-256: 3266c05c4321ffada671fb41c1a15f901309a2236cf98bcb2a933209d869d9f2
+Native construction, simulation, equivalence and acceptance remain UNVERIFIED. Overall NOT ACCEPTED.

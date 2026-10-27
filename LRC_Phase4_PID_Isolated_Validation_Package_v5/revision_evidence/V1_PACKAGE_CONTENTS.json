@@ -1,0 +1,216 @@
+{
+  "components": [
+    {
+      "path": "ARCHITECTURE_AND_SEMANTICS.md",
+      "bytes": 5827,
+      "sha256": "cb8a7f2e930da1324b58380b320ca7cec8f35aea3809b9f3cee8a1aad0d0fef7",
+      "role": "Prepared documentation or audit record"
+    },
+    {
+      "path": "BASELINE_IDENTITY.md",
+      "bytes": 3051,
+      "sha256": "c892d91ab8d49d4a9a8b6bc275e4ea8f6748a28e3d17ca33c889c9e612bf3f51",
+      "role": "Prepared documentation or audit record"
+    },
+    {
+      "path": "LIMITATIONS_AND_UNEXECUTED.md",
+      "bytes": 2970,
+      "sha256": "c167f02ebb8d8d40f066b7dcb9b9e8524d8f121a5173cf50e9181de6eca983e1",
+      "role": "Prepared documentation or audit record"
+    },
+    {
+      "path": "OWNER_REVIEW_TEMPLATE.json",
+      "bytes": 343,
+      "sha256": "e76fffe81b98d550f51ae8a3c64d6f8da7370062a520027d1533451a4776480d",
+      "role": "Prepared documentation or audit record"
+    },
+    {
+      "path": "PACKAGE_PREPARATION_REVIEW.md",
+      "bytes": 4271,
+      "sha256": "c88939d6395b278d36c74d07cfec7a95ae77fe0dc988ceadde1ba639baee606d",
+      "role": "Prepared documentation or audit record"
+    },
+    {
+      "path": "PRESERVATION_CHECK.json",
+      "bytes": 93,
+      "sha256": "bb209a9fe1fe944e1015d95d2d84434d91166cd898d5365af93dab51b858ebf0",
+      "role": "Prepared documentation or audit record"
+    },
+    {
+      "path": "PROTECTED_INPUTS.json",
+      "bytes": 15613,
+      "sha256": "71e2aee0d36b2c6f01da21253b13518a8c83a15e0a19999b0fa3b6a0d2513256",
+      "role": "Prepared documentation or audit record"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7073,
+      "sha256": "0b97227051bf18f403968ad4eadb2a3fcecb855330b489bea2de0457d5e191c9",
+      "role": "Prepared documentation or audit record"
+    },
+    {
+      "path": "STATIC_CHECKS.json",
+      "bytes": 2641,
+      "sha256": "a4e51cda5980dabebba035852578200e43abd3e7bb1e4fc766f97d7939741e8c",
+      "role": "Prepared documentation or audit record"
+    },
+    {
+      "path": "TEST_REGISTER.md",
+      "bytes": 8450,
+      "sha256": "3266c05c4321ffada671fb41c1a15f901309a2236cf98bcb2a933209d869d9f2",
+      "role": "Prepared documentation or audit record"
+    },
+    {
+      "path": "baseline/FINAL_ASSESSMENT.json",
+      "bytes": 19751,
+      "sha256": "8c5238e084c650c054f6f43a56046e3ef7b9cabb9f377bdfb4d348ec9f301739",
+      "role": "Unchanged historical/source bytes; not executable workflow"
+    },
+    {
+      "path": "baseline/LRC_Phase2_OpenLoop.slx",
+      "bytes": 76091,
+      "sha256": "3833d3951b4c33ec265f54b8e91c4b4c4a65474fee357e8186fccc19ca992fd1",
+      "role": "Unchanged historical/source bytes; not executable workflow"
+    },
+    {
+      "path": "baseline/MASTER_EXECUTION_PROMPT.txt",
+      "bytes": 47149,
+      "sha256": "c9a36231db3f0e50b1c1d4d29a394f3b431a501c29011d60fc19a246fbebb759",
+      "role": "Unchanged historical/source bytes; not executable workflow"
+    },
+    {
+      "path": "baseline/PHASE2_FORMAL_CLOSURE_RECORD_20261024.md",
+      "bytes": 12436,
+      "sha256": "48d9b477f0c64252e68829cd9bdd54393f7da24531a54e4bce46c640c1adcb2f",
+      "role": "Unchanged historical/source bytes; not executable workflow"
+    },
+    {
+      "path": "baseline/PHASE3_ANALYTICAL_REVIEW_20261024.md",
+      "bytes": 41292,
+      "sha256": "26f8e65b947c89a9a3776585437121e943ac95f20d0f7017a3afded3c4df7495",
+      "role": "Unchanged historical/source bytes; not executable workflow"
+    },
+    {
+      "path": "baseline/PHASE3_ANALYTICAL_ROBUSTNESS_QUALIFICATION.md",
+      "bytes": 28865,
+      "sha256": "42c2b72ef42d31adb70404825450a8bf3bdb500b907b98256cdfe8e4dc961fcf",
+      "role": "Unchanged historical/source bytes; not executable workflow"
+    },
+    {
+      "path": "baseline/PHASE3_CONSTRAINED_SYNTHESIS_REVIEW.md",
+      "bytes": 23656,
+      "sha256": "f66673edf33de7206bd49e368afa7113e0ab69f9786b8c7a4020e8b6c90ecc34",
+      "role": "Unchanged historical/source bytes; not executable workflow"
+    },
+    {
+      "path": "baseline/POST_RECHECK_INTEGRITY_NOTE.md",
+      "bytes": 1210,
+      "sha256": "33fbdf72d7a63f1cc391d12b9cfbc77776706798eed5c86c23faedf1a1c54543",
+      "role": "Unchanged historical/source bytes; not executable workflow"
+    },
+    {
+      "path": "baseline/SHA256SUMS_NATIVE.txt",
+      "bytes": 4063,
+      "sha256": "2713410625248b9a0ec1956ce416f9bddc52b66cfd212c34da09ef206f536049",
+      "role": "Unchanged historical/source bytes; not executable workflow"
+    },
+    {
+      "path": "baseline/SHA256SUMS_RETURNED.txt",
+      "bytes": 10851,
+      "sha256": "f78ce6b423d869fdb97013d1dae487557112f8b5ae72763d9cb7315100cdf8b1",
+      "role": "Unchanged historical/source bytes; not executable workflow"
+    },
+    {
+      "path": "baseline/init_lrc_pid.m",
+      "bytes": 20187,
+      "sha256": "9bba69abdeb825285e4565d42fccb80b1487dfe5b923a50135ddd8a281e13aa3",
+      "role": "Unchanged historical/source bytes; not executable workflow"
+    },
+    {
+      "path": "matlab/p4_assess.m",
+      "bytes": 7448,
+      "sha256": "b709d6a92e8dcaa01019b93f0895f1358ff51da0714112c483c7d5e1f77a9470",
+      "role": "Unexecuted local MATLAB workflow source"
+    },
+    {
+      "path": "matlab/p4_constants.m",
+      "bytes": 351,
+      "sha256": "55380b92dbbf0a5d0cd72549bb8285b88b01397e5553ef790eca8bd1933584ae",
+      "role": "Unexecuted local MATLAB workflow source"
+    },
+    {
+      "path": "matlab/p4_guard.m",
+      "bytes": 1432,
+      "sha256": "903f52b7821858d5006b1b9d5144d6b438ea6aa2e01aafb1127eebddca55ec9f",
+      "role": "Unexecuted local MATLAB workflow source"
+    },
+    {
+      "path": "matlab/p4_hash.m",
+      "bytes": 295,
+      "sha256": "59a4ed350633e73b74a17fde91f00956632a16738d18f767a93c7463a0c7ada0",
+      "role": "Unexecuted local MATLAB workflow source"
+    },
+    {
+      "path": "matlab/p4_isolate.m",
+      "bytes": 750,
+      "sha256": "fdf1a739e159180477f3e23ce04e8b20625d0da359511307708801670659ac65",
+      "role": "Unexecuted local MATLAB workflow source"
+    },
+    {
+      "path": "matlab/p4_json.m",
+      "bytes": 226,
+      "sha256": "79ef17a94eddb560482c9d3dcf2690310ca43ae80c19563b6228236cf82f5f73",
+      "role": "Unexecuted local MATLAB workflow source"
+    },
+    {
+      "path": "matlab/p4_snapshot.m",
+      "bytes": 1319,
+      "sha256": "d60cbb77969e1e6f3f5f8f7633a92fb6cbf34cc690f959149a66f1287ee7b11c",
+      "role": "Unexecuted local MATLAB workflow source"
+    },
+    {
+      "path": "matlab/p4_tail.m",
+      "bytes": 1536,
+      "sha256": "4992061f67536c23cdac02fcb192aa8addb646619493848e46f763d8b876ca71",
+      "role": "Unexecuted local MATLAB workflow source"
+    },
+    {
+      "path": "matlab/phase4_build.m",
+      "bytes": 10373,
+      "sha256": "fa53d38dba5eb38938b0727aed74a6b0c2a0b7718f322837250b19692823dd36",
+      "role": "Unexecuted local MATLAB workflow source"
+    },
+    {
+      "path": "matlab/phase4_compare.m",
+      "bytes": 2814,
+      "sha256": "9ffb71c6041b284f10c1f7475b91a6f686bbb09cfa8ee100da6bd72ce1fe4c73",
+      "role": "Unexecuted local MATLAB workflow source"
+    },
+    {
+      "path": "matlab/phase4_reopen.m",
+      "bytes": 297,
+      "sha256": "ce93cf8a57489ad711fa85134a8c744a0158fee8874553e02481f16782cd48ed",
+      "role": "Unexecuted local MATLAB workflow source"
+    },
+    {
+      "path": "matlab/phase4_run.m",
+      "bytes": 4230,
+      "sha256": "6c114af51f8d8e1a473def1407398edf57ab4a513d1418c293b7815f3abb3b8b",
+      "role": "Unexecuted local MATLAB workflow source"
+    },
+    {
+      "path": "tools/collect_evidence.py",
+      "bytes": 3811,
+      "sha256": "1930f499a26177f6e1c35e13a9d64ec403524cabb7f5fcdc83d31fa4f5837a66",
+      "role": "Python integrity/collection tool; no simulation"
+    },
+    {
+      "path": "tools/verify_package.py",
+      "bytes": 2201,
+      "sha256": "b1b9fd755086db0382410e9698a2a2e9ab689c34a80e02f973c11f35bae445f0",
+      "role": "Python integrity/collection tool; no simulation"
+    }
+  ],
+  "self_and_manifest": "Covered by SHA256SUMS.txt / external ZIP hash",
+  "experimental_outputs": "NOT GENERATED"
+}

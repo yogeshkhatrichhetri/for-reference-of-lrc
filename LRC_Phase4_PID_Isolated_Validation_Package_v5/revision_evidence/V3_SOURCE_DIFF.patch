@@ -1,0 +1,95 @@
+--- v2/matlab/phase4_run.m
++++ v3/matlab/phase4_run.m
+@@ -25,7 +25,7 @@
+ in=in.setModelParameter('Solver','ode15s','MaxStep',sprintf('%.17g',maxstep), ...
+  'RelTol',sprintf('%.17g',rel),'AbsTol',sprintf('%.17g',absTol),'StopTime','1','CaptureErrors','on');
+ if strcmp(scenario,'stress')
+- assert(owner.supplemental_stress_approved,'Diagnostic stress not owner-approved');
++ assert(isfield(owner,'supplemental_stress_approved') && islogical(owner.supplemental_stress_approved) && isscalar(owner.supplemental_stress_approved) && isequal(owner.supplemental_stress_approved,true),'Diagnostic stress requires explicit logical-scalar true approval');
+  in=in.setBlockParameter([m '/Reference'],'After','8');
+  in=in.setBlockParameter([m '/Return'],'After',sprintf('%.17g',p.r-8));
+ end
+--- v2/tools/test_authorization_static.py
++++ v3/tools/test_authorization_static.py
+@@ -36,6 +36,37 @@
+ for name,stage,owner,expected in cases:
+     actual=permits(stage,owner);assert actual==expected,name
+     rows.append({'test':name,'expected_allowed':expected,'predicate_allowed':actual,'pass':True})
++# Extract the exact stress predicate from the actual runner, not a separate policy copy.
++runner=(root/'matlab/phase4_run.m').read_text()
++stress_body=runner.split("if strcmp(scenario,'stress')\n",1)[1].split('\nend',1)[0]
++stress_line=stress_body.splitlines()[0]
++stress_pattern=re.compile(r"\s*assert\(isfield\(owner,'(\w+)'\) && islogical\(owner\.(\w+)\) && isscalar\(owner\.(\w+)\) && isequal\(owner\.(\w+),true\),'[^']+'\);\s*")
++m=stress_pattern.fullmatch(stress_line)
++assert m and len(set(m.groups()))==1 and m[1]=='supplemental_stress_approved'
++assert stress_body.index('assert(')<stress_body.index('in=in.setBlockParameter(')
++assert runner.index(stress_line)<runner.index('result=sim(in)')
++def stress_permits(scenario,owner):
++    # Models only the extracted approval predicate, not runtime identity/solver behavior.
++    return scenario!='stress' or (type(owner.get(m[1])) is bool and owner[m[1]] is True)
++stress_cases=[
++ ('stress_missing',{},False),
++ ('stress_logical_false',{'supplemental_stress_approved':False},False),
++ ('stress_logical_true_predicate_only',{'supplemental_stress_approved':True},True),
++ ('stress_string_true',{'supplemental_stress_approved':'true'},False),
++ ('stress_numeric_one',{'supplemental_stress_approved':1},False),
++ ('stress_nonscalar_logical_array',{'supplemental_stress_approved':[True,True]},False),
++ ('stress_empty_array',{'supplemental_stress_approved':[]},False),
++ ('stress_null',{'supplemental_stress_approved':None},False),
++ ('stress_object',{'supplemental_stress_approved':{}},False),
++]
++for name,owner,expected in stress_cases:
++    actual=stress_permits('stress',owner); assert actual==expected,name
++    rows.append({'test':name,'expected_allowed':expected,'predicate_allowed':actual,'pass':True})
++nominal_owner={'simulation_authorized':True,'proposed_criteria_approved':True,'supplemental_stress_approved':False}
++assert permits('simulation',nominal_owner) and stress_permits('nominal',nominal_owner)
++rows.append({'test':'nominal_StageB_predicates_true_stress_false','expected_allowed':True,'predicate_allowed':True,'pass':True})
++template=json.loads((root/'OWNER_REVIEW_TEMPLATE.json').read_text())
++assert template['supplemental_stress_approved'] is False
+ # Actual file/model identities remain required after positive Boolean predicates.
+ for name,stage in [('phase4_build','construction'),('phase4_run','simulation'),('phase4_reopen','simulation'),('phase4_compare','simulation')]:
+     text=(root/f'matlab/{name}.m').read_text()
+--- v2/README.md
++++ v3/README.md
+@@ -10,9 +10,9 @@
+ 
+ ```bash
+ work=$(mktemp -d "$HOME/LRC_P4_package_XXXXXXXX")
+-python3 -m zipfile -t /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v2.zip
+-python3 -m zipfile -e /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v2.zip "$work"
+-cd "$work/LRC_Phase4_PID_Isolated_Validation_Package_v2"
++python3 -m zipfile -t /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v3.zip
++python3 -m zipfile -e /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v3.zip "$work"
++cd "$work/LRC_Phase4_PID_Isolated_Validation_Package_v3"
+ python3 tools/verify_package.py
+ ```
+ 
+@@ -37,7 +37,7 @@
+ MATLAB R2026a / Simulink26.1 and a valid Simulink license are required. No Control System Toolbox or tuning toolbox is used. Build and each run redirect working/cache/code-generation directories into their own new experiment-stage directory and restore the prior session paths afterward. No code generation is requested. Use a clean desktop session for Scope inspection, double precision, normal simulation mode, Java enabled. Have several GB free memory/disk for dense evidence. Commands below are instructions for later owner execution; they have NOT been run by the AI.
+ 
+ ```matlab
+-pkg = '/absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v2';
++pkg = '/absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v3';
+ addpath(fullfile(pkg,'matlab'));  % DO NOT use genpath(pkg)
+ owner = fullfile(fileparts(pkg),'OWNER_CONSTRUCTION.json');
+ out = fullfile(fileparts(pkg),'P4_RUN_20261025_001'); % new, nonexistent sibling
+@@ -79,7 +79,7 @@
+ ## 6. Collect existing evidence without altering it
+ 
+ ```bash
+-python3 /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v2/tools/collect_evidence.py \
++python3 /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v3/tools/collect_evidence.py \
+   /absolute/path/P4_RUN_20261025_001 \
+   /absolute/path/LRC_Phase4_PID_Evidence_001.zip
+ ```
+@@ -95,6 +95,8 @@
+ 
+ An individual numerical check or all checks passing cannot authorize deployment, robustness claims, acceptance of the overall candidate, or completion of full Phase4. Stop after evidence collection and audit.
+ 
+-## V2 verification evidence
++## V3 supplemental approval correction and evidence
+ 
+-STATIC_CHECKS.json and revision_evidence/FINAL_VERIFIER_LOG.txt refer to the final V2 component count. revision_evidence/V1_* preserves the original preparation records, including its stale preliminary35-component log; the original V1 release passed all36 checksums. V2_CHANGELOG.md and revision_evidence/SOURCE_DIFF.patch document only the scoped corrections. Guard tests use a source-derived Python predicate harness, not MATLAB execution. Re-run `python3 tools/test_authorization_static.py` for those static tests. Final archive/extraction logs are retained with the release audit.
++For the stress scenario only, supplemental_stress_approved must exist and be JSON logical-scalar true. False, absent, string, numeric, nonscalar array, null or object values are rejected before stress-specific configuration or simulation. Nominal runs do not require supplemental approval; they remain subject to valid Stage B authorization and all existing identity/criteria checks. The unchanged template defaults supplemental_stress_approved to false.
++
++STATIC_CHECKS.json and revision_evidence/FINAL_VERIFIER_LOG.txt refer to the final V3 component count. revision_evidence/V2_* preserves preceding preparation evidence; V2 passed all49 checksums. V3_CHANGELOG.md and revision_evidence/V3_SOURCE_DIFF.patch document the narrow correction. Run `python3 tools/test_authorization_static.py` for22 static/source-derived predicate cases, including the original12 and10 supplemental/nominal cases. These are not MATLAB runtime tests. No model was constructed, compiled or simulated during this revision.

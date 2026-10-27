@@ -1,0 +1,146 @@
+--- v4/matlab/phase4_build.m
++++ v5/matlab/phase4_build.m
+@@ -115,11 +115,17 @@
+  required={'Controller','Form','TimeDomain','P','I','D','N','b','c','TrackingMode','Kt', ...
+  'LimitOutput','UseKiTs','UseFilter','InitialConditionForIntegrator','InitialConditionForFilter', ...
+  'IntegratorMethod','FilterMethod','SampleTime','ExternalReset','ControllerParametersSource', ...
+- 'InitialConditionSource','LimitIntegratorOutput','UseExternalTs'};
++ 'InitialConditionSource','LimitIntegrator','UseExternalTs', ...
++ 'UpperIntegratorSaturationLimit','LowerIntegratorSaturationLimit'};
+  assert(all(isfield(dp,required)),'Required native parameters missing; STOP this branch, no substitute');
++ % Integrator limits are separate from the native controller-output limit flag.
++ upperIntegratorLimit=get_param(b,'UpperIntegratorSaturationLimit');
++ lowerIntegratorLimit=get_param(b,'LowerIntegratorSaturationLimit');
++ assert(isequal(str2double(upperIntegratorLimit),Inf) && isequal(str2double(lowerIntegratorLimit),-Inf), ...
++  'Unexpected integrator limit defaults; STOP without replacing them');
+  set_param(b,'Controller','PID','Form','Parallel','TimeDomain','Continuous-time', ...
+   'ControllerParametersSource','internal','InitialConditionSource','internal', ...
+-  'LimitIntegratorOutput','off','UseExternalTs','off', ...
++  'LimitIntegrator','off','UseExternalTs','off', ...
+   'P','Kp','I','Ki','D','Kd','N','N','b','1','c','0','TrackingMode','on','Kt','Kaw', ...
+   'LimitOutput','off','UseKiTs','off','UseFilter','on','ExternalReset','none', ...
+   'InitialConditionForIntegrator','0','InitialConditionForFilter','0');
+@@ -127,6 +133,11 @@
+   set_param(b,'TimeDomain','Discrete-time','SampleTime','Ts', ...
+    'IntegratorMethod','Forward Euler','FilterMethod','Backward Euler');
+  end
++ assert(strcmp(get_param(b,'LimitIntegrator'),'off'),'Integrator saturation must be disabled');
++ assert(strcmp(get_param(b,'LimitOutput'),'off'),'Native output limiting must remain disabled; external actuator saturation applies');
++ assert(isequal(str2double(get_param(b,'UpperIntegratorSaturationLimit')),str2double(upperIntegratorLimit)) && ...
++  isequal(str2double(get_param(b,'LowerIntegratorSaturationLimit')),str2double(lowerIntegratorLimit)), ...
++  'Integrator limit defaults changed during configuration');
+  ph=get_param(b,'PortHandles'); assert(numel(ph.Inport)==3 && numel(ph.Outport)==1,'Unexpected native port layout');
+  wire(c,'in1/1','Native_PID/1'); wire(c,'in2/1','Native_PID/2'); wire(c,'in3/1','Native_PID/3');
+  raw='Native_PID/1';
+--- v4/ARCHITECTURE_AND_SEMANTICS.md
++++ v5/ARCHITECTURE_AND_SEMANTICS.md
+@@ -21,7 +21,7 @@
+ 
+ ## Native configuration and supported external anti-windup
+ 
+-Use simulink/Continuous/PID Controller (2DOF) in both time domains. Required settings: PID, Parallel, internal parameters, P=Kp, I=Ki, D=Kd, N=N, b=1, c=0, zero internal initial conditions, no external reset. Continuous TimeDomain for CN; Discrete-time for DN with SampleTime=Ts, IntegratorMethod=Forward Euler, FilterMethod=Backward Euler, UseFilter=on. UseKiTs=off, UseExternalTs=off, LimitIntegratorOutput=off.
++Use simulink/Continuous/PID Controller (2DOF) in both time domains. Required settings: PID, Parallel, internal parameters, P=Kp, I=Ki, D=Kd, N=N, b=1, c=0, zero internal initial conditions, no external reset. Continuous TimeDomain for CN; Discrete-time for DN with SampleTime=Ts, IntegratorMethod=Forward Euler, FilterMethod=Backward Euler, UseFilter=on. UseKiTs=off, UseExternalTs=off, LimitIntegrator=off.
+ 
+ The external Saturation feeds both the plant and native TR input. TrackingMode=on, Kt=Kaw; LimitOutput=off avoids double limiting. The documented tracking difference enters the integrator input. With UseKiTs off, the native discrete integrator supplies Ts; do not pre-scale Ki or Kt. These settings are consistent with the reference law, but local scheduling and trajectories remain unverified. Missing parameters, unexpected ports, compilation errors or failed recurrence residuals stop the branch; never alter the reference law to make it match.
+ 
+@@ -50,3 +50,7 @@
+ ## File-generation isolation
+ 
+ p4_isolate redirects working directory, CacheFolder and CodeGenFolder into the current new build/run directory and restores the previous session configuration/path on return. No code generation is invoked. Supported API reference: https://www.mathworks.com/help/simulink/slref/simulink.filegencontrol.html (getConfig/set; accessed2026-10-25).
++
++## V5 local parameter-name correction
++
++The owner reported that the actual R2026a/Simulink26.1 PID2DOF mask exposes LimitIntegrator, with UpperIntegratorSaturationLimit=inf and LowerIntegratorSaturationLimit=-inf. V5 requires all three integrator fields, verifies their infinite defaults, explicitly disables LimitIntegrator and independently disables LimitOutput, then verifies that both flags and the original upper/lower integrator values were preserved. The upper/lower integrator limits are not rewritten. The historical external-documentation expectation is preserved in the V4 architecture copy and addendum; the owner-reported mask is the basis for this scoped correction. This is not a claim of native execution by the preparer.
+--- v4/README.md
++++ v5/README.md
+@@ -10,9 +10,9 @@
+ 
+ ```bash
+ work=$(mktemp -d "$HOME/LRC_P4_package_XXXXXXXX")
+-python3 -m zipfile -t /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v4.zip
+-python3 -m zipfile -e /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v4.zip "$work"
+-cd "$work/LRC_Phase4_PID_Isolated_Validation_Package_v4"
++python3 -m zipfile -t /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v5.zip
++python3 -m zipfile -e /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v5.zip "$work"
++cd "$work/LRC_Phase4_PID_Isolated_Validation_Package_v5"
+ python3 tools/verify_package.py
+ ```
+ 
+@@ -37,7 +37,7 @@
+ MATLAB R2026a / Simulink26.1 and a valid Simulink license are required. No Control System Toolbox or tuning toolbox is used. Build and each run redirect working/cache/code-generation directories into their own new experiment-stage directory and restore the prior session paths afterward. No code generation is requested. Use a clean desktop session for Scope inspection, double precision, normal simulation mode, Java enabled. Have several GB free memory/disk for dense evidence. Commands below are instructions for later owner execution; they have NOT been run by the AI.
+ 
+ ```matlab
+-pkg = '/absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v4';
++pkg = '/absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v5';
+ addpath(fullfile(pkg,'matlab'));  % DO NOT use genpath(pkg)
+ owner = fullfile(fileparts(pkg),'OWNER_CONSTRUCTION.json');
+ out = fullfile(fileparts(pkg),'P4_RUN_20261025_001'); % new, nonexistent sibling
+@@ -79,7 +79,7 @@
+ ## 6. Collect existing evidence without altering it
+ 
+ ```bash
+-python3 /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v4/tools/collect_evidence.py \
++python3 /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v5/tools/collect_evidence.py \
+   /absolute/path/P4_RUN_20261025_001 \
+   /absolute/path/LRC_Phase4_PID_Evidence_001.zip
+ ```
+@@ -100,3 +100,9 @@
+ The unchanged stress-approval predicate runs immediately after scenario/precision validation, before run-directory creation, isolation setup, model loading, diary initialization, stress-specific configuration or simulation. Rejected stress approval therefore does not consume a single-use run directory through this execution path. Nominal remains independent of supplemental approval, subject to all existing Stage B, criteria and identity checks. Both default-disabled gates and the authorization template are unchanged.
+ 
+ The test harness retains all22 static/source-derived Boolean cases and adds7 ordering checks. Its regression check rejects the original late V3 placement. These are static tests, not MATLAB runtime tests or observed filesystem behavior in MATLAB. Run `python3 tools/test_authorization_static.py`. Current metadata and final logs describe V4; revision_evidence/V3_* retains prior release evidence. See V4_CHANGELOG.md and V4_SOURCE_DIFF.patch for the exact relocation. No native model was constructed, compiled or simulated.
++
++## V5 native integrator-limit parameter correction
++
++Read V5_LOCAL_PARAMETER_CORRECTION_ADDENDUM.md before any later owner-authorized construction. The verified-by-owner block exposes LimitIntegrator, not the former expected name. V5 changes only this configuration validation and adds assertions preserving its independent infinite upper/lower limits. Both LimitIntegrator and native LimitOutput remain off; the external actuator Saturation blocks remain unchanged. Run `python3 tools/test_native_parameters_static.py` for source-derived regression checks. All earlier authorization tests remain available.
++
++Preserve the failed Stage A directory and original owner approval record unchanged. Do not resume or overwrite that partial model. Any later authorized V5 construction needs a fresh nonexistent P4_RUN_* sibling and a new Stage A record bound to the V5 manifest hash; simulation remains separately unauthorized. This release preparation does not authorize that construction or simulate anything.
+--- v4/tools/test_native_parameters_static.py
++++ v5/tools/test_native_parameters_static.py
+@@ -0,0 +1,47 @@
++#!/usr/bin/env python3
++"""Source-derived metadata/guard regression; no MATLAB or Simulink execution."""
++from pathlib import Path
++import re,json,math
++root=Path(__file__).resolve().parents[1];s=(root/'matlab/phase4_build.m').read_text();checks=[]
++def check(name,value):
++    assert value,name
++    checks.append({'test':name,'pass':True})
++req_text=re.search(r'required=\{(.*?)\};',s,re.S).group(1)
++required=re.findall(r"'([^']+)'",req_text)
++check('required_fields_unique',len(required)==len(set(required)))
++for key in ['LimitIntegrator','UpperIntegratorSaturationLimit','LowerIntegratorSaturationLimit','LimitOutput']:
++    check('required_'+key,key in required)
++check('no_failed_parameter_name_in_builder','LimitIntegratorOutput' not in s)
++assertion="assert(all(isfield(dp,required)),'Required native parameters missing; STOP this branch, no substitute');"
++check('original_fail_closed_assertion_retained',assertion in s)
++config=re.search(r"set_param\(b,'Controller','PID'.*?\);",s,re.S).group(0)
++tokens=re.findall(r"'([^']*)'",config);pairs=dict(zip(tokens[::2],tokens[1::2]))
++check('native_integrator_limit_off',pairs.get('LimitIntegrator')=='off')
++check('native_output_limit_independently_off',pairs.get('LimitOutput')=='off')
++check('integrator_limits_not_rewritten','UpperIntegratorSaturationLimit' not in pairs and 'LowerIntegratorSaturationLimit' not in pairs)
++check('initial_integrator_limits_read',"upperIntegratorLimit=get_param(b,'UpperIntegratorSaturationLimit');" in s and "lowerIntegratorLimit=get_param(b,'LowerIntegratorSaturationLimit');" in s)
++check('infinite_default_validation', 'isequal(str2double(upperIntegratorLimit),Inf) && isequal(str2double(lowerIntegratorLimit),-Inf)' in s)
++check('integrator_limit_values_preserved',"isequal(str2double(get_param(b,'UpperIntegratorSaturationLimit')),str2double(upperIntegratorLimit))" in s and "isequal(str2double(get_param(b,'LowerIntegratorSaturationLimit')),str2double(lowerIntegratorLimit))" in s)
++for key in ['LimitIntegrator','LimitOutput']:
++    check('post_configuration_'+key,"assert(strcmp(get_param(b,'"+key+"'),'off')" in s)
++# Evaluate the set-membership semantics of the exact retained isfield/all precondition.
++metadata=set(required)
++check('complete_synthetic_metadata_passes',all(k in metadata for k in required))
++missing=[]
++for key in required:
++    fixture=metadata-{key}; rejected=not all(k in fixture for k in required)
++    assert rejected,key
++    missing.append({'missing_field':key,'rejected':True})
++check('every_required_field_missing_rejected',len(missing)==len(required))
++for name,u,l,expected in [('defaults','inf','-inf',True),('finite_upper','5','-inf',False),('finite_lower','inf','-5',False),('reversed','-inf','inf',False),('malformed','unknown','-inf',False)]:
++    try: actual=float(u)==math.inf and float(l)==-math.inf
++    except (TypeError,ValueError):actual=False
++    check('synthetic_limit_fixture_'+name,actual==expected)
++check('construction_gate_explicit',"p4_guard(approval,'construction')" in s)
++a=(root/'matlab/p4_authorize.m').read_text().split("if strcmp(stage,'construction')\n",1)[1].split("elseif strcmp(stage,'simulation')",1)[0]
++check('construction_independent_of_simulation_permission','construction_authorized' in a and 'simulation_authorized' not in a and 'proposed_criteria_approved' not in a)
++code='\n'.join(x for x in s.splitlines() if not x.lstrip().startswith('%'))
++check('no_simulation_call_in_construction',not re.search(r'\b(?:sim|phase4_run|phase4_reopen)\s*\(',code))
++check('no_simulation_start_command',not re.search(r"'SimulationCommand'\s*,\s*'(?:start|continue|step)'",code))
++check('compile_command_retained',"'SimulationCommand','update'" in code)
++print(json.dumps({'classification':'STATIC_SOURCE_DERIVED_NOT_MATLAB_RUNTIME','checks':checks,'missing_field_fixtures':missing,'native_parameter_access':'UNVERIFIED','native_construction':'UNVERIFIED'},indent=2))

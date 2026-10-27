@@ -1,0 +1,22 @@
+{
+  "classification": "STATIC_PACKAGE_PREPARATION_ONLY",
+  "final_component_count": 60,
+  "final_archive_file_entries": 61,
+  "authorization_predicates": {
+    "cases": 22,
+    "status": "PASS",
+    "classification": "STATIC_SOURCE_DERIVED_NOT_MATLAB_RUNTIME",
+    "log": "revision_evidence/AUTHORIZATION_STATIC_TESTS.json"
+  },
+  "MATLAB_source_syntax": {
+    "files": 13,
+    "parser": "MISS_HIT 0.9.44",
+    "status": "PASS"
+  },
+  "Python_source_syntax": "PASS",
+  "final_verifier_log": "revision_evidence/FINAL_VERIFIER_LOG.txt",
+  "preservation_evidence": "revision_evidence/V3_PRESERVATION.json",
+  "native_execution": "NOT PERFORMED",
+  "native_equivalence": "UNVERIFIED",
+  "overall_project": "NOT ACCEPTED"
+}

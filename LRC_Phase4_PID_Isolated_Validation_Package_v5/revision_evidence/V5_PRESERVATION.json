@@ -1,0 +1,39 @@
+{
+  "prior_archives_unchanged": {
+    "LRC_Phase4_PID_Isolated_Validation_Package.zip": "64e39231b20e63ce6b1ce091ef977fb3e7d6b89b265ab4378289b67e6d4c8c99",
+    "LRC_Phase4_PID_Isolated_Validation_Package_v2.zip": "e8454d5db7ca041fbb38f21226d75cdf15ea58a8dce34099d3563dd02b8103be",
+    "LRC_Phase4_PID_Isolated_Validation_Package_v3.zip": "f187c6f4adc0f8299a5cb53d8e3b8f4a65eafab2504a9514703bf1215b1c4607",
+    "LRC_Phase4_PID_Isolated_Validation_Package_v4.zip": "d44c90a0224314990d064e812601037bd95da8e4fa5df79f12ca641a583ca3ad"
+  },
+  "byte_identical_paths": [
+    "OWNER_REVIEW_TEMPLATE.json",
+    "TEST_REGISTER.md",
+    "baseline/FINAL_ASSESSMENT.json",
+    "baseline/LRC_Phase2_OpenLoop.slx",
+    "baseline/MASTER_EXECUTION_PROMPT.txt",
+    "baseline/PHASE2_FORMAL_CLOSURE_RECORD_20261024.md",
+    "baseline/PHASE3_ANALYTICAL_REVIEW_20261024.md",
+    "baseline/PHASE3_ANALYTICAL_ROBUSTNESS_QUALIFICATION.md",
+    "baseline/PHASE3_CONSTRAINED_SYNTHESIS_REVIEW.md",
+    "baseline/POST_RECHECK_INTEGRITY_NOTE.md",
+    "baseline/SHA256SUMS_NATIVE.txt",
+    "baseline/SHA256SUMS_RETURNED.txt",
+    "baseline/init_lrc_pid.m",
+    "matlab/p4_assess.m",
+    "matlab/p4_authorize.m",
+    "matlab/p4_constants.m",
+    "matlab/p4_guard.m",
+    "matlab/p4_hash.m",
+    "matlab/p4_isolate.m",
+    "matlab/p4_json.m",
+    "matlab/p4_snapshot.m",
+    "matlab/p4_tail.m",
+    "matlab/phase4_compare.m",
+    "matlab/phase4_reopen.m",
+    "matlab/phase4_run.m",
+    "tools/test_authorization_static.py"
+  ],
+  "only_MATLAB_change": "phase4_build.m native integrator-limit parameter correction/validation",
+  "owner_failed_directory_and_approval": "Not accessed; remain on owner computer",
+  "native_execution": false
+}

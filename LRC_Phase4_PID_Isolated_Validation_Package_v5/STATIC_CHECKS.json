@@ -1,0 +1,21 @@
+{
+  "classification": "STATIC_PACKAGE_PREPARATION_ONLY",
+  "final_component_count": 88,
+  "final_archive_file_entries": 89,
+  "native_parameter_static_checks": 27,
+  "missing_required_field_rejection_fixtures": 26,
+  "parameter_checks": "PASS",
+  "existing_authorization_predicates": 22,
+  "existing_ordering_checks": 7,
+  "existing_authorization_results_unchanged": true,
+  "old_V4_expectation_regression": "PASS_REJECTED",
+  "MATLAB_syntax": {
+    "files": 13,
+    "parser": "MISS_HIT 0.9.44",
+    "status": "PASS"
+  },
+  "Python_syntax": "PASS",
+  "final_verifier_log": "revision_evidence/FINAL_VERIFIER_LOG.txt",
+  "native_execution": "NOT PERFORMED",
+  "overall_project": "NOT ACCEPTED"
+}

@@ -1,0 +1,14 @@
+{
+  "owner": "",
+  "utc": "",
+  "proposed_criteria_approved": false,
+  "supplemental_stress_approved": false,
+  "test_register_sha256": "3266c05c4321ffada671fb41c1a15f901309a2236cf98bcb2a933209d869d9f2",
+  "scope": "Research-only isolated nominal PID validation; no robustness/deployment/project acceptance",
+  "construction_authorized": false,
+  "simulation_authorized": false,
+  "package_manifest_sha256": "",
+  "source_sha256": "3833d3951b4c33ec265f54b8e91c4b4c4a65474fee357e8186fccc19ca992fd1",
+  "constructed_model_sha256": "",
+  "build_record_sha256": ""
+}

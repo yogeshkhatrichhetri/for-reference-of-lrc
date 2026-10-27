@@ -1,0 +1,100 @@
+--- v3/matlab/phase4_run.m
++++ v4/matlab/phase4_run.m
+@@ -4,6 +4,9 @@
+ [pkg,owner]=p4_guard(approval,'simulation',out); %#ok<ASGLU>
+ assert(any(strcmp(scenario,{'nominal','stress'})) && any(strcmp(precision,{'base','refined','fresh'})));
+ if strcmp(precision,'fresh'), assert(strcmp(scenario,'nominal'),'Fresh check uses nominal'); end
++if strcmp(scenario,'stress')
++ assert(isfield(owner,'supplemental_stress_approved') && islogical(owner.supplemental_stress_approved) && isscalar(owner.supplemental_stress_approved) && isequal(owner.supplemental_stress_approved,true),'Diagnostic stress requires explicit logical-scalar true approval');
++end
+ rundir=fullfile(out,[scenario '_' precision]); assert(~isfolder(rundir),'Run exists. Refusing overwrite');
+ [parent,leaf]=fileparts(out);
+ assert(strcmp(char(java.io.File(parent).getCanonicalPath),char(java.io.File(fileparts(pkg)).getCanonicalPath)) && startsWith(leaf,'P4_RUN_'),'Wrong experiment directory');
+@@ -25,7 +28,6 @@
+ in=in.setModelParameter('Solver','ode15s','MaxStep',sprintf('%.17g',maxstep), ...
+  'RelTol',sprintf('%.17g',rel),'AbsTol',sprintf('%.17g',absTol),'StopTime','1','CaptureErrors','on');
+ if strcmp(scenario,'stress')
+- assert(isfield(owner,'supplemental_stress_approved') && islogical(owner.supplemental_stress_approved) && isscalar(owner.supplemental_stress_approved) && isequal(owner.supplemental_stress_approved,true),'Diagnostic stress requires explicit logical-scalar true approval');
+  in=in.setBlockParameter([m '/Reference'],'After','8');
+  in=in.setBlockParameter([m '/Return'],'After',sprintf('%.17g',p.r-8));
+ end
+--- v3/tools/test_authorization_static.py
++++ v4/tools/test_authorization_static.py
+@@ -43,8 +43,24 @@
+ stress_pattern=re.compile(r"\s*assert\(isfield\(owner,'(\w+)'\) && islogical\(owner\.(\w+)\) && isscalar\(owner\.(\w+)\) && isequal\(owner\.(\w+),true\),'[^']+'\);\s*")
+ m=stress_pattern.fullmatch(stress_line)
+ assert m and len(set(m.groups()))==1 and m[1]=='supplemental_stress_approved'
+-assert stress_body.index('assert(')<stress_body.index('in=in.setBlockParameter(')
+-assert runner.index(stress_line)<runner.index('result=sim(in)')
++# Inspect executable source ordering (not native execution). Preserve all Boolean cases below.
++code='\n'.join(x for x in runner.splitlines() if not x.lstrip().startswith('%'))
++guard_position=code.index(stress_line)
++ordering=[]
++for name,token in [
++ ('guard_before_run_directory_creation','mkdir(rundir)'),
++ ('guard_before_isolation','p4_isolate(rundir)'),
++ ('guard_before_model_loading','load_system(modelFile)'),
++ ('guard_before_diary',"diary(fullfile(rundir,'execution_diary.txt'))"),
++ ('guard_before_stress_configuration','in=in.setBlockParameter('),
++ ('guard_before_simulation','result=sim(in)')]:
++    assert guard_position<code.index(token),name
++    ordering.append({'test':name,'pass':True})
++validation="if strcmp(precision,'fresh'), assert(strcmp(scenario,'nominal'),'Fresh check uses nominal'); end\n"
++expected=validation+"if strcmp(scenario,'stress')\n"+stress_line+"\nend\nrundir="
++assert expected in code, 'Stress guard must immediately follow scenario/precision validation'
++assert code.count(stress_line)==1, 'Guard must not remain at the late location'
++ordering.append({'test':'guard_immediately_after_scenario_precision_validation','pass':True})
+ def stress_permits(scenario,owner):
+     # Models only the extracted approval predicate, not runtime identity/solver behavior.
+     return scenario!='stress' or (type(owner.get(m[1])) is bool and owner[m[1]] is True)
+@@ -93,4 +109,4 @@
+         assert value>=0
+         if peak<=level: assert value==0
+ assert "osRef,2,true" in a and "osFinal,2,true" in a
+-print(json.dumps({'classification':'STATIC_SOURCE_DERIVED_PREDICATE_HARNESS_NOT_MATLAB_EXECUTION','cases':rows,'entrypoint_guard_checks':'PASS','identity_binding_source_checks':'PASS','overshoot_synthetic_arithmetic':'PASS','native_guard_execution':'UNVERIFIED'},indent=2))
++print(json.dumps({'classification':'STATIC_SOURCE_DERIVED_PREDICATE_HARNESS_NOT_MATLAB_EXECUTION','cases':rows,'ordering_tests':ordering,'entrypoint_guard_checks':'PASS','identity_binding_source_checks':'PASS','overshoot_synthetic_arithmetic':'PASS','native_guard_execution':'UNVERIFIED'},indent=2))
+--- v3/README.md
++++ v4/README.md
+@@ -10,9 +10,9 @@
+ 
+ ```bash
+ work=$(mktemp -d "$HOME/LRC_P4_package_XXXXXXXX")
+-python3 -m zipfile -t /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v3.zip
+-python3 -m zipfile -e /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v3.zip "$work"
+-cd "$work/LRC_Phase4_PID_Isolated_Validation_Package_v3"
++python3 -m zipfile -t /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v4.zip
++python3 -m zipfile -e /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v4.zip "$work"
++cd "$work/LRC_Phase4_PID_Isolated_Validation_Package_v4"
+ python3 tools/verify_package.py
+ ```
+ 
+@@ -37,7 +37,7 @@
+ MATLAB R2026a / Simulink26.1 and a valid Simulink license are required. No Control System Toolbox or tuning toolbox is used. Build and each run redirect working/cache/code-generation directories into their own new experiment-stage directory and restore the prior session paths afterward. No code generation is requested. Use a clean desktop session for Scope inspection, double precision, normal simulation mode, Java enabled. Have several GB free memory/disk for dense evidence. Commands below are instructions for later owner execution; they have NOT been run by the AI.
+ 
+ ```matlab
+-pkg = '/absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v3';
++pkg = '/absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v4';
+ addpath(fullfile(pkg,'matlab'));  % DO NOT use genpath(pkg)
+ owner = fullfile(fileparts(pkg),'OWNER_CONSTRUCTION.json');
+ out = fullfile(fileparts(pkg),'P4_RUN_20261025_001'); % new, nonexistent sibling
+@@ -79,7 +79,7 @@
+ ## 6. Collect existing evidence without altering it
+ 
+ ```bash
+-python3 /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v3/tools/collect_evidence.py \
++python3 /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v4/tools/collect_evidence.py \
+   /absolute/path/P4_RUN_20261025_001 \
+   /absolute/path/LRC_Phase4_PID_Evidence_001.zip
+ ```
+@@ -95,8 +95,8 @@
+ 
+ An individual numerical check or all checks passing cannot authorize deployment, robustness claims, acceptance of the overall candidate, or completion of full Phase4. Stop after evidence collection and audit.
+ 
+-## V3 supplemental approval correction and evidence
++## V4 early supplemental approval validation
+ 
+-For the stress scenario only, supplemental_stress_approved must exist and be JSON logical-scalar true. False, absent, string, numeric, nonscalar array, null or object values are rejected before stress-specific configuration or simulation. Nominal runs do not require supplemental approval; they remain subject to valid Stage B authorization and all existing identity/criteria checks. The unchanged template defaults supplemental_stress_approved to false.
++The unchanged stress-approval predicate runs immediately after scenario/precision validation, before run-directory creation, isolation setup, model loading, diary initialization, stress-specific configuration or simulation. Rejected stress approval therefore does not consume a single-use run directory through this execution path. Nominal remains independent of supplemental approval, subject to all existing Stage B, criteria and identity checks. Both default-disabled gates and the authorization template are unchanged.
+ 
+-STATIC_CHECKS.json and revision_evidence/FINAL_VERIFIER_LOG.txt refer to the final V3 component count. revision_evidence/V2_* preserves preceding preparation evidence; V2 passed all49 checksums. V3_CHANGELOG.md and revision_evidence/V3_SOURCE_DIFF.patch document the narrow correction. Run `python3 tools/test_authorization_static.py` for22 static/source-derived predicate cases, including the original12 and10 supplemental/nominal cases. These are not MATLAB runtime tests. No model was constructed, compiled or simulated during this revision.
++The test harness retains all22 static/source-derived Boolean cases and adds7 ordering checks. Its regression check rejects the original late V3 placement. These are static tests, not MATLAB runtime tests or observed filesystem behavior in MATLAB. Run `python3 tools/test_authorization_static.py`. Current metadata and final logs describe V4; revision_evidence/V3_* retains prior release evidence. See V4_CHANGELOG.md and V4_SOURCE_DIFF.patch for the exact relocation. No native model was constructed, compiled or simulated.

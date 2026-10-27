@@ -1,0 +1,330 @@
+--- v1/LIMITATIONS_AND_UNEXECUTED.md
++++ v2/LIMITATIONS_AND_UNEXECUTED.md
+@@ -5,7 +5,7 @@
+ 3. High N and narrow continuous margins remain. No new gain search, diagnostic noise, delay or parameter-uncertainty experiment is included. Previous failures remain in their original record.
+ 4. The old/current Phase2 hash discrepancy is unresolved. Only the verified current hash anchors this isolated experiment. No source save or original-manifest regeneration is permitted.
+ 5. R2026a documentation supports the proposed native configuration. Actual installed parameter availability, port layout, tracking scheduling, zero initialization and numerical equivalence still require owner-side construction/tests. Unsupported settings or mismatched recurrence must stop the affected branch. No workaround changing reference equations is authorized.
+-6. The master leaves implementation-equivalence tolerances and a saturation-activation waveform unspecified. TEST_REGISTER.md labels proposed numbers/scenario. The package does not claim those proposals are contractual. A separate owner review and execution authorization is needed; the included template defaults to false.
++6. The master leaves implementation-equivalence tolerances and a saturation-activation waveform unspecified. TEST_REGISTER.md labels proposed numbers/scenario. The package does not claim those proposals are contractual. Separate Stage A construction and Stage B simulation approvals are required; both default false. Stage A does not require or grant simulation/test-criteria approval. Stage B requires approved criteria and exact package/source/register/build/model identities.
+ 7. Native integral/filter monitoring uses an independent filter observer and I reconstruction, clearly labelled. It is not direct native internal-state evidence. Full Simulink state logging is retained for later investigation if equivalence/residual tests fail.
+ 8. Future-tail reasoning is a conditional analytical bound supported by native terminal logs and declared equations, with numerical conditioning checks. It is not formal interval arithmetic or global nonlinear stability proof. A failed bound withholds permanent settling.
+ 9. Stress recovery is diagnostic. Nominal performance limits do not apply to tracking the deliberately unreachable8 V plateau. P, PI, load-current disturbance and the full mandatory Scope architecture remain future master obligations.
+--- v1/OWNER_REVIEW_TEMPLATE.json
++++ v2/OWNER_REVIEW_TEMPLATE.json
+@@ -1,9 +1,14 @@
+ {
+   "owner": "",
+   "utc": "",
+-  "execution_authorized": false,
+   "proposed_criteria_approved": false,
+   "supplemental_stress_approved": false,
+   "test_register_sha256": "3266c05c4321ffada671fb41c1a15f901309a2236cf98bcb2a933209d869d9f2",
+-  "scope": "Research-only isolated nominal PID validation; no robustness/deployment/project acceptance"
++  "scope": "Research-only isolated nominal PID validation; no robustness/deployment/project acceptance",
++  "construction_authorized": false,
++  "simulation_authorized": false,
++  "package_manifest_sha256": "",
++  "source_sha256": "3833d3951b4c33ec265f54b8e91c4b4c4a65474fee357e8186fccc19ca992fd1",
++  "constructed_model_sha256": "",
++  "build_record_sha256": ""
+ }
+--- v1/README.md
++++ v2/README.md
+@@ -10,28 +10,36 @@
+ 
+ ```bash
+ work=$(mktemp -d "$HOME/LRC_P4_package_XXXXXXXX")
+-python3 -m zipfile -t /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package.zip
+-python3 -m zipfile -e /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package.zip "$work"
+-cd "$work/LRC_Phase4_PID_Isolated_Validation_Package"
++python3 -m zipfile -t /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v2.zip
++python3 -m zipfile -e /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v2.zip "$work"
++cd "$work/LRC_Phase4_PID_Isolated_Validation_Package_v2"
+ python3 tools/verify_package.py
+ ```
+ 
+ Compare the ZIP SHA-256 with the delivery value before extraction (`sha256sum /absolute/path/...zip`). verify_package.py checks all component hashes, inventory coverage and source identity. It never calls MATLAB, opens a model, or writes project files.
+ 
+-## 2. Owner review, still before execution
++## 2. Two independent, disabled-by-default approval stages
+ 
+-Review the proposed tolerance/scenario register. The master specifies no numeric implementation-equivalence tolerance. OWNER_REVIEW_TEMPLATE.json defaults to false. After a separate execution instruction, copy that template into the extraction parent (outside the frozen package), fill owner, UTC, register hash, and explicitly approve execution, proposed criteria and the supplemental stress scenario. Do not modify the package template or manifest.
++Current authorization is package preparation only. Do not execute the following native commands yet.
+ 
+-The required register hash is printed by the integrity tool. The subsequent guards compare it with the immutable package register. If any proposal is rejected, stop for a new versioned preparation; do not edit thresholds in place.
++Stage A authorizes only construction/update/compilation, fingerprinting and saving the new isolated model. Copy OWNER_REVIEW_TEMPLATE.json OUTSIDE the package as OWNER_CONSTRUCTION.json. After explicit owner authorization, fill owner/UTC, set construction_authorized=true, and leave simulation_authorized=false. Proposed-criteria and stress approvals may remain false for Stage A. Populate package_manifest_sha256 using `sha256sum SHA256SUMS.txt`. Retain the supplied source_sha256 and unchanged test_register_sha256. Do not edit the frozen package. Stage A has no call to sim or the scenario runner.
++
++After successful construction, close without saving any inspection changes. Preserve OWNER_CONSTRUCTION.json and build_record.json unchanged. Stage A does NOT authorize a simulation through the GUI, sim(), or any other route. The package guards enforce its supported script entry points; they cannot prevent an owner from deliberately bypassing scripts in MATLAB.
++
++Stage B requires a NEW separate owner decision. Copy the default template outside the package as OWNER_SIMULATION.json; do not repurpose the Stage A approval record. Set simulation_authorized=true only after that decision. Set proposed_criteria_approved=true only after reviewing TEST_REGISTER.md. Set supplemental_stress_approved=true only if the labelled synthetic stress case is approved. construction_authorized may remain false in this separate Stage B record: completed construction is established by the preserved Stage A build record, not a renewed construction permission.
++
++Bind Stage B to the same package_manifest_sha256, source_sha256 and test_register_sha256. Fill constructed_model_sha256 from the actual saved model and build_record_sha256 from the completed build_record.json, using sha256sum. Both must match the constructed file and recorded identities. No model/build hash is supplied or fabricated at package-preparation time.
++
++A missing/false/malformed permission or missing/mismatched identity stops before any simulation. Owner fields must use JSON true/false, not strings or numbers. Each applicable approval record and its SHA-256 are recorded in build/run evidence. No Stage A code writes or enables Stage B. If proposed criteria are rejected, stop for a new versioned review; do not weaken thresholds in place.
+ 
+ ## 3. Construction only, after separate authorization
+ 
+ MATLAB R2026a / Simulink26.1 and a valid Simulink license are required. No Control System Toolbox or tuning toolbox is used. Build and each run redirect working/cache/code-generation directories into their own new experiment-stage directory and restore the prior session paths afterward. No code generation is requested. Use a clean desktop session for Scope inspection, double precision, normal simulation mode, Java enabled. Have several GB free memory/disk for dense evidence. Commands below are instructions for later owner execution; they have NOT been run by the AI.
+ 
+ ```matlab
+-pkg = '/absolute/path/LRC_Phase4_PID_Isolated_Validation_Package';
++pkg = '/absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v2';
+ addpath(fullfile(pkg,'matlab'));  % DO NOT use genpath(pkg)
+-owner = fullfile(fileparts(pkg),'OWNER_REVIEW.json');
++owner = fullfile(fileparts(pkg),'OWNER_CONSTRUCTION.json');
+ out = fullfile(fileparts(pkg),'P4_RUN_20261025_001'); % new, nonexistent sibling
+ phase4_build(out,owner)
+ ```
+@@ -40,7 +48,7 @@
+ 
+ ## 4. Native experiments and numerical checks, separately authorized
+ 
+-Restart MATLAB cleanly; set pkg, owner, out as above and add only matlab/. Execute sequentially, stopping at the first failure:
++Only after separate Stage B authorization, restart MATLAB cleanly; set pkg/out as above, add only matlab/, and set `owner = fullfile(fileparts(pkg),'OWNER_SIMULATION.json');`. Execute sequentially, stopping at the first failure:
+ 
+ ```matlab
+ phase4_run(out,owner,'nominal','base')
+@@ -60,7 +68,7 @@
+ 
+ ## 5. Fresh-process saved-model reproduction
+ 
+-Exit MATLAB. Start a new MATLAB R2026a process, set the three paths and add matlab/ again:
++Exit MATLAB. Start a new MATLAB R2026a process, set pkg/out and the Stage B OWNER_SIMULATION.json path, and add matlab/ again:
+ 
+ ```matlab
+ phase4_reopen(out,owner)
+@@ -71,7 +79,7 @@
+ ## 6. Collect existing evidence without altering it
+ 
+ ```bash
+-python3 /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package/tools/collect_evidence.py \
++python3 /absolute/path/LRC_Phase4_PID_Isolated_Validation_Package_v2/tools/collect_evidence.py \
+   /absolute/path/P4_RUN_20261025_001 \
+   /absolute/path/LRC_Phase4_PID_Evidence_001.zip
+ ```
+@@ -86,3 +94,7 @@
+ - Collected ZIP: existing evidence plus independent SHA256SUMS_EXPERIMENT.txt and collection-status inventory, never an altered historical native manifest.
+ 
+ An individual numerical check or all checks passing cannot authorize deployment, robustness claims, acceptance of the overall candidate, or completion of full Phase4. Stop after evidence collection and audit.
++
++## V2 verification evidence
++
++STATIC_CHECKS.json and revision_evidence/FINAL_VERIFIER_LOG.txt refer to the final V2 component count. revision_evidence/V1_* preserves the original preparation records, including its stale preliminary35-component log; the original V1 release passed all36 checksums. V2_CHANGELOG.md and revision_evidence/SOURCE_DIFF.patch document only the scoped corrections. Guard tests use a source-derived Python predicate harness, not MATLAB execution. Re-run `python3 tools/test_authorization_static.py` for those static tests. Final archive/extraction logs are retained with the release audit.
+--- v1/matlab/p4_assess.m
++++ v2/matlab/p4_assess.m
+@@ -62,7 +62,8 @@
+   max(s.y(1:end-1),s.y(2:end))+segmentError>1.5606,1,'last');
+  if isempty(last), settleUpper=0; else, settleUpper=t(last+1); end
+  if ~tail.bound_pass, settleUpper=Inf; end
+- osRef=100*(peakUpper-p.r)/p.r; osFinal=100*(peakUpper-s.y(end))/s.y(end);
++ % Nonnegative overshoot: a response below its comparison level has zero overshoot.
++ osRef=100*max(0,peakUpper-p.r)/p.r; osFinal=100*max(0,peakUpper-s.y(end))/s.y(end);
+  sat=abs(s.raw)>5; satDuration=sum(diff(t).*double(sat(1:end-1)));
+  intervals=intervals_of(t,sat);
+  metric=struct('peak_logged_V',peak,'peak_time_logged_s',t(jpeak),'peak_upper_bound_V',peakUpper, ...
+--- v1/matlab/p4_authorize.m
++++ v2/matlab/p4_authorize.m
+@@ -0,0 +1,12 @@
++function p4_authorize(owner,stage)
++% Pure fail-closed approval predicates. No model/runtime/file mutation.
++% Each stage has a separate affirmative flag; construction never grants simulation.
++if strcmp(stage,'construction')
++    assert(isfield(owner,'construction_authorized') && islogical(owner.construction_authorized) && isscalar(owner.construction_authorized) && owner.construction_authorized, 'Stage A construction/compile authorization required');
++elseif strcmp(stage,'simulation')
++    assert(isfield(owner,'simulation_authorized') && islogical(owner.simulation_authorized) && isscalar(owner.simulation_authorized) && owner.simulation_authorized, 'Stage B separate simulation authorization required');
++    assert(isfield(owner,'proposed_criteria_approved') && islogical(owner.proposed_criteria_approved) && isscalar(owner.proposed_criteria_approved) && owner.proposed_criteria_approved, 'Test criteria require owner approval');
++else
++    error('Phase4:Stage','Unknown authorization stage');
++end
++end
+--- v1/matlab/p4_guard.m
++++ v2/matlab/p4_guard.m
+@@ -1,5 +1,9 @@
+-function [pkg,owner]=p4_guard(approval)
++function [pkg,owner]=p4_guard(approval,stage,out)
+ pkg=fileparts(fileparts(mfilename('fullpath')));
++assert(isfile(approval),'Owner approval record required');
++owner=jsondecode(fileread(approval));
++p4_authorize(owner,stage); % Gate checked before querying or loading native software.
++assert(strlength(string(owner.owner))>0 && strlength(string(owner.utc))>0,'Owner/date missing');
+ assert(strcmp(version('-release'),'2026a'),'This package targets MATLAB R2026a.');
+ v=ver('simulink'); assert(~isempty(v) && startsWith(v.Version,'26.1'),'Simulink 26.1 required.');
+ assert(license('test','Simulink'),'Simulink license unavailable.');
+@@ -12,9 +16,21 @@
+ end
+ source=fullfile(pkg,'baseline','LRC_Phase2_OpenLoop.slx');
+ assert(strcmp(p4_hash(source),'3833d3951b4c33ec265f54b8e91c4b4c4a65474fee357e8186fccc19ca992fd1'),'Source model identity mismatch');
+-assert(isfile(approval),'Owner review record required'); owner=jsondecode(fileread(approval));
+-assert(owner.execution_authorized && owner.proposed_criteria_approved, ...
+- 'No execution: separate owner authorization and numerical-criteria approval required.');
+-assert(strlength(string(owner.owner))>0 && strlength(string(owner.utc))>0,'Owner/date missing');
+-assert(strcmp(owner.test_register_sha256,p4_hash(fullfile(pkg,'TEST_REGISTER.md'))),'Wrong reviewed register');
++assert(strcmp(owner.package_manifest_sha256,p4_hash(fullfile(pkg,'SHA256SUMS.txt'))),'Wrong approved package manifest');
++assert(strcmp(owner.source_sha256,p4_hash(source)),'Wrong approved source identity');
++assert(strcmp(owner.test_register_sha256,p4_hash(fullfile(pkg,'TEST_REGISTER.md'))),'Wrong approved test register');
++if strcmp(stage,'simulation')
++    assert(nargin==3 && isfolder(out),'Established construction directory required');
++    record=fullfile(out,'build_record.json');
++    assert(strcmp(owner.build_record_sha256,p4_hash(record)),'Wrong approved construction record');
++    build=jsondecode(fileread(record));
++    assert(strcmp(build.model,'LRC_Phase4_PID_Isolated'),'Wrong constructed model name');
++    assert(strcmp(build.package_manifest_sha256,owner.package_manifest_sha256),'Construction used a different package');
++    assert(strcmp(build.test_register_sha256,owner.test_register_sha256),'Construction used a different test register');
++    assert(strcmp(build.source_sha256,owner.source_sha256),'Construction used a different source');
++    p4_authorize(build.owner,'construction');
++    assert(strcmp(build.status,'CONSTRUCTED_AND_COMPILED_ONLY_NOT_SIMULATED'),'Construction not established');
++    modelFile=fullfile(out,[build.model '.slx']);
++    assert(strcmp(owner.constructed_model_sha256,build.model_sha256) && strcmp(p4_hash(modelFile),build.model_sha256),'Wrong approved constructed-model hash');
+ end
++end
+--- v1/matlab/phase4_build.m
++++ v2/matlab/phase4_build.m
+@@ -1,6 +1,6 @@
+ function phase4_build(out,approval)
+ % CONSTRUCTION ONLY. Never invokes sim. Run only after separate owner authorization.
+-[pkg,owner]=p4_guard(approval);
++[pkg,owner]=p4_guard(approval,'construction');
+ assert(java.io.File(out).isAbsolute(),'Use an absolute experiment path');
+ assert(~isfolder(out) && ~isfile(out),'Output already exists; nothing overwritten');
+ [parent,leaf]=fileparts(out); assert(strcmp(char(java.io.File(parent).getCanonicalPath), ...
+@@ -75,6 +75,9 @@
+ s=p4_snapshot(m); p4_json(fullfile(out,'configuration_snapshot.json'),s);
+ p4_json(fullfile(out,'build_record.json'),struct('model',m,'model_sha256',p4_hash(modelFile), ...
+  'source_sha256',sourceHash,'matlab',version,'products',ver,'owner',owner, ...
++ 'approval_stage','construction','approval_record_sha256',p4_hash(approval), ...
++ 'package_manifest_sha256',p4_hash(fullfile(pkg,'SHA256SUMS.txt')), ...
++ 'test_register_sha256',p4_hash(fullfile(pkg,'TEST_REGISTER.md')), ...
+  'source_relation','Physical_LRC copied with add_block; independent new controller paths; source never saved', ...
+  'status','CONSTRUCTED_AND_COMPILED_ONLY_NOT_SIMULATED'));
+ close_system(m,0);
+--- v1/matlab/phase4_compare.m
++++ v2/matlab/phase4_compare.m
+@@ -1,6 +1,6 @@
+ function phase4_compare(out,approval,mode)
+ % Postprocess existing evidence only; never invokes sim or changes model.
+-p4_guard(approval); assert(any(strcmp(mode,{'convergence','fresh'})));
++[~,owner]=p4_guard(approval,'simulation',out); assert(any(strcmp(mode,{'convergence','fresh'})));
+ file=fullfile(out,[mode '_comparison.json']); assert(~isfile(file),'Comparison already exists');
+ rows=struct([]);
+ if strcmp(mode,'convergence'), scenarios={'nominal','stress'}; else, scenarios={'nominal'}; end
+@@ -38,7 +38,7 @@
+  end
+  add([sc{1} '_both_run_checks_pass'],double(~(ar.all_checks_pass && br.all_checks_pass)),0);
+ end
+-r=struct('mode',mode,'checks',rows,'all_checks_pass',all([rows.pass]), ...
++r=struct('owner',owner,'approval_record_sha256',p4_hash(approval),'mode',mode,'checks',rows,'all_checks_pass',all([rows.pass]), ...
+  'status','SUBTASK_NUMERICAL_COMPARISON_ONLY_NOT_OVERALL_ACCEPTANCE');
+ p4_json(file,r); assert(r.all_checks_pass,'Comparison failed; preserve evidence and stop');
+     function add(n,v,l)
+--- v1/matlab/phase4_reopen.m
++++ v2/matlab/phase4_reopen.m
+@@ -1,5 +1,6 @@
+ function phase4_reopen(out,approval)
+ % Invoke from a NEW MATLAB R2026a process. Loads saved bytes, does not rebuild or save.
++p4_guard(approval,'simulation',out);
+ assert(isempty(find_system('type','block_diagram')),'Fresh MATLAB process required');
+ phase4_run(out,approval,'nominal','fresh');
+ phase4_compare(out,approval,'fresh');
+--- v1/matlab/phase4_run.m
++++ v2/matlab/phase4_run.m
+@@ -1,7 +1,7 @@
+ function phase4_run(out,approval,scenario,precision)
+ % EXECUTION ENTRY POINT. Never called by package preparation or integrity tools.
+ % Allowed scenario: nominal / stress. Precision: base / refined / fresh.
+-[pkg,owner]=p4_guard(approval); %#ok<ASGLU>
++[pkg,owner]=p4_guard(approval,'simulation',out); %#ok<ASGLU>
+ assert(any(strcmp(scenario,{'nominal','stress'})) && any(strcmp(precision,{'base','refined','fresh'})));
+ if strcmp(precision,'fresh'), assert(strcmp(scenario,'nominal'),'Fresh check uses nominal'); end
+ rundir=fullfile(out,[scenario '_' precision]); assert(~isfolder(rundir),'Run exists. Refusing overwrite');
+@@ -31,6 +31,9 @@
+ end
+ p4_json(fullfile(rundir,'run_declaration.json'),struct('scenario',scenario,'precision',precision, ...
+  'maxstep',maxstep,'RelTol',rel,'AbsTol',absTol,'parameters',p,'owner',owner, ...
++ 'approval_stage','simulation','approval_record_sha256',p4_hash(approval), ...
++ 'package_manifest_sha256',owner.package_manifest_sha256, ...
++ 'test_register_sha256',owner.test_register_sha256,'build_record_sha256',owner.build_record_sha256, ...
+  'model_sha256_before',p4_hash(modelFile),'release',version,'status','STARTED_NOT_YET_PASSED'));
+ try
+  result=sim(in); %#ok<NASGU> ONLY NATIVE EXECUTION CALL; owner must authorize before invoking this function.
+--- v1/tools/test_authorization_static.py
++++ v2/tools/test_authorization_static.py
+@@ -0,0 +1,65 @@
++#!/usr/bin/env python3
++"""Source-derived approval predicate tests. Does NOT run MATLAB/Simulink."""
++from pathlib import Path
++import json,re
++root=Path(__file__).resolve().parents[1]
++s=(root/'matlab/p4_authorize.m').read_text()
++parts=s.split("if strcmp(stage,'construction')\n",1)[1].split("elseif strcmp(stage,'simulation')\n")
++branches={'construction':parts[0], 'simulation':parts[1].split('\nelse\n')[0]}
++pattern=re.compile(r"\s*assert\(isfield\(owner,'(\w+)'\) && islogical\(owner\.(\w+)\) && isscalar\(owner\.(\w+)\) && owner\.(\w+), '[^']+'\);\s*")
++fields={}
++for stage,body in branches.items():
++    fields[stage]=[]
++    for line in body.splitlines():
++        if not line.strip():continue
++        m=pattern.fullmatch(line)
++        assert m and len(set(m.groups()))==1, 'Unrecognized predicate: do not silently model different code'
++        fields[stage].append(m[1])
++assert fields=={'construction':['construction_authorized'],'simulation':['simulation_authorized','proposed_criteria_approved']}
++def permits(stage,owner):
++    return all(type(owner.get(f)) is bool and owner[f] for f in fields[stage])
++cases=[
++ ('A_absent','construction',{},False),
++ ('A_false','construction',{'construction_authorized':False},False),
++ ('A_string_not_permission','construction',{'construction_authorized':'true'},False),
++ ('A_numeric_not_permission','construction',{'construction_authorized':1},False),
++ ('A_true_B_false_criteria_false','construction',{'construction_authorized':True,'simulation_authorized':False,'proposed_criteria_approved':False},True),
++ ('B_absent_even_when_A_true','simulation',{'construction_authorized':True,'proposed_criteria_approved':True},False),
++ ('B_false_even_when_A_true','simulation',{'construction_authorized':True,'simulation_authorized':False,'proposed_criteria_approved':True},False),
++ ('B_false_A_false','simulation',{'construction_authorized':False,'simulation_authorized':False,'proposed_criteria_approved':True},False),
++ ('B_true_criteria_false','simulation',{'simulation_authorized':True,'proposed_criteria_approved':False},False),
++ ('B_true_criteria_missing','simulation',{'simulation_authorized':True},False),
++ ('B_string_not_permission','simulation',{'simulation_authorized':'true','proposed_criteria_approved':True},False),
++ ('B_positive_predicates_only','simulation',{'construction_authorized':False,'simulation_authorized':True,'proposed_criteria_approved':True},True),
++]
++rows=[]
++for name,stage,owner,expected in cases:
++    actual=permits(stage,owner);assert actual==expected,name
++    rows.append({'test':name,'expected_allowed':expected,'predicate_allowed':actual,'pass':True})
++# Actual file/model identities remain required after positive Boolean predicates.
++for name,stage in [('phase4_build','construction'),('phase4_run','simulation'),('phase4_reopen','simulation'),('phase4_compare','simulation')]:
++    text=(root/f'matlab/{name}.m').read_text()
++    assert f"p4_guard(approval,'{stage}'" in text
++    gate=text.index(f"p4_guard(approval,'{stage}'")
++    for operation in ['load_system(', 'new_system(', 'sim(', 'phase4_run(']:
++        # Exclude the function declaration itself, and comments.
++        body='\n'.join(x for x in text.splitlines()[1:] if not x.lstrip().startswith('%'))
++        if operation in body: assert body.index('p4_guard(')<body.index(operation)
++    if stage=='construction':
++        assert not re.search(r'(?m)^\s*(?:\w+\s*=\s*)?(?:sim|phase4_run|phase4_reopen)\(',body)
++        assert not re.search(r'simulation_authorized\s*=',body)
++g=(root/'matlab/p4_guard.m').read_text()
++for binding in ['owner.package_manifest_sha256','owner.source_sha256','owner.test_register_sha256','owner.build_record_sha256','owner.constructed_model_sha256','p4_hash(modelFile)','build.package_manifest_sha256','build.test_register_sha256']:
++    assert binding in g,binding
++assert g.index('p4_authorize(owner,stage)')<g.index("version('-release')")
++# Overshoot arithmetic fixture checks, not plant or controller simulation.
++a=(root/'matlab/p4_assess.m').read_text()
++assert 'osRef=100*max(0,peakUpper-p.r)/p.r;' in a
++assert 'osFinal=100*max(0,peakUpper-s.y(end))/s.y(end);' in a
++for level in [1.53,1.529]:
++    for peak in [level-.1,level,level+.01]:
++        value=100*max(0,peak-level)/level
++        assert value>=0
++        if peak<=level: assert value==0
++assert "osRef,2,true" in a and "osFinal,2,true" in a
++print(json.dumps({'classification':'STATIC_SOURCE_DERIVED_PREDICATE_HARNESS_NOT_MATLAB_EXECUTION','cases':rows,'entrypoint_guard_checks':'PASS','identity_binding_source_checks':'PASS','overshoot_synthetic_arithmetic':'PASS','native_guard_execution':'UNVERIFIED'},indent=2))
+--- v1/tools/verify_package.py
++++ v2/tools/verify_package.py
+@@ -27,7 +27,10 @@
+     assert entries['baseline/LRC_Phase2_OpenLoop.slx']=='3833d3951b4c33ec265f54b8e91c4b4c4a65474fee357e8186fccc19ca992fd1'
+     assert entries['baseline/MASTER_EXECUTION_PROMPT.txt']=='c9a36231db3f0e50b1c1d4d29a394f3b431a501c29011d60fc19a246fbebb759'
+     owner=json.loads((root/'OWNER_REVIEW_TEMPLATE.json').read_text())
+-    assert owner['execution_authorized'] is False and owner['proposed_criteria_approved'] is False
++    assert owner['construction_authorized'] is False and owner['simulation_authorized'] is False
++    assert owner['proposed_criteria_approved'] is False and owner['supplemental_stress_approved'] is False
++    recorded=json.loads((root/'STATIC_CHECKS.json').read_text())
++    assert recorded['final_component_count']==len(entries), 'Recorded component count mismatch'
+     assert owner['test_register_sha256']==entries['TEST_REGISTER.md']
+     print(f'Static package integrity PASS: {len(entries)} component hashes; exact current model and master identity.')
+     print('TEST_REGISTER SHA-256: '+entries['TEST_REGISTER.md'])

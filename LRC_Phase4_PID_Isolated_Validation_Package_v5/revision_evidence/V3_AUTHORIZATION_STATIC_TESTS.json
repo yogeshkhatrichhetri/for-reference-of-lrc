@@ -1,0 +1,141 @@
+{
+  "classification": "STATIC_SOURCE_DERIVED_PREDICATE_HARNESS_NOT_MATLAB_EXECUTION",
+  "cases": [
+    {
+      "test": "A_absent",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "A_false",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "A_string_not_permission",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "A_numeric_not_permission",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "A_true_B_false_criteria_false",
+      "expected_allowed": true,
+      "predicate_allowed": true,
+      "pass": true
+    },
+    {
+      "test": "B_absent_even_when_A_true",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "B_false_even_when_A_true",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "B_false_A_false",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "B_true_criteria_false",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "B_true_criteria_missing",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "B_string_not_permission",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "B_positive_predicates_only",
+      "expected_allowed": true,
+      "predicate_allowed": true,
+      "pass": true
+    },
+    {
+      "test": "stress_missing",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "stress_logical_false",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "stress_logical_true_predicate_only",
+      "expected_allowed": true,
+      "predicate_allowed": true,
+      "pass": true
+    },
+    {
+      "test": "stress_string_true",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "stress_numeric_one",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "stress_nonscalar_logical_array",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "stress_empty_array",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "stress_null",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "stress_object",
+      "expected_allowed": false,
+      "predicate_allowed": false,
+      "pass": true
+    },
+    {
+      "test": "nominal_StageB_predicates_true_stress_false",
+      "expected_allowed": true,
+      "predicate_allowed": true,
+      "pass": true
+    }
+  ],
+  "entrypoint_guard_checks": "PASS",
+  "identity_binding_source_checks": "PASS",
+  "overshoot_synthetic_arithmetic": "PASS",
+  "native_guard_execution": "UNVERIFIED"
+}

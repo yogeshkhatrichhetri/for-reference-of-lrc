@@ -1,0 +1,9 @@
+# V4 narrowly scoped guard relocation — 2026-10-25
+
+V3 SHA-256:f187c6f4adc0f8299a5cb53d8e3b8f4a65eafab2504a9514703bf1215b1c4607. Its archive and all60 components verify. V1/V2/V3 archives remain unchanged.
+
+The correct supplemental stress assertion formerly ran after mkdir, isolation, model loading and diary setup. V4 moves that exact assertion, unchanged, into a stress-only conditional immediately after scenario/precision validation. The later stress configuration block retains only its original reference overrides. No other MATLAB source changes. The guard now precedes every run-specific filesystem/model side effect in phase4_run.m, so an invalid stress approval is rejected before creation of the single-use run directory. This conclusion is source-derived, not an observed native execution result.
+
+Field existence, logical scalar type and explicit true remain required. Nominal behavior, Stage A/Stage B gates, all identity checks, template, test criteria, gains, physical model, controller equations, solver configuration and overshoot formulas remain unchanged. All22 prior Boolean tests remain. Seven static checks assert early placement before mkdir, isolation, loading, diary, stress configuration and sim, and immediate adjacency to scenario/precision validation. A regression fixture with the original V3 runner must fail the updated harness.
+
+The release includes final component verification output reproduced after completed-ZIP clean extraction, syntax-parser output, authorization/ordering results, exact source diff and preservation evidence. Prior metadata is retained under revision_evidence/V3_*. Baseline/historical artifacts are unchanged; the Phase2 model-hash discrepancy remains unresolved and Phase3 robustness Decision2 is preserved. No MATLAB/Simulink runtime, construction, compilation or simulation is invoked. Overall NOT ACCEPTED.

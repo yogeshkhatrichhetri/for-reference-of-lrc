@@ -1,0 +1,15 @@
+# Known limitations and pending work
+
+1. All native construction, compilation, trajectories, timing, anti-windup recovery, runtime block inspection, Scope/cursor evidence, solver convergence and fresh-process reproduction are UNVERIFIED. This is a package, not executed experimental evidence.
+2. Phase3 robustness report Decision2 remains unchanged. The user's express package authorization is a scoped departure, not reversal. No robustness envelope, deployment readiness, hardware suitability or overall project acceptance follows from a later nominal equivalence pass.
+3. High N and narrow continuous margins remain. No new gain search, diagnostic noise, delay or parameter-uncertainty experiment is included. Previous failures remain in their original record.
+4. The old/current Phase2 hash discrepancy is unresolved. Only the verified current hash anchors this isolated experiment. No source save or original-manifest regeneration is permitted.
+5. R2026a documentation supports the proposed native configuration. Actual installed parameter availability, port layout, tracking scheduling, zero initialization and numerical equivalence still require owner-side construction/tests. Unsupported settings or mismatched recurrence must stop the affected branch. No workaround changing reference equations is authorized.
+6. The master leaves implementation-equivalence tolerances and a saturation-activation waveform unspecified. TEST_REGISTER.md labels proposed numbers/scenario. The package does not claim those proposals are contractual. Separate Stage A construction and Stage B simulation approvals are required; both default false. Stage A does not require or grant simulation/test-criteria approval. Stage B requires approved criteria and exact package/source/register/build/model identities.
+7. Native integral/filter monitoring uses an independent filter observer and I reconstruction, clearly labelled. It is not direct native internal-state evidence. Full Simulink state logging is retained for later investigation if equivalence/residual tests fail.
+8. Future-tail reasoning is a conditional analytical bound supported by native terminal logs and declared equations, with numerical conditioning checks. It is not formal interval arithmetic or global nonlinear stability proof. A failed bound withholds permanent settling.
+9. Stress recovery is diagnostic. Nominal performance limits do not apply to tracking the deliberately unreachable8 V plateau. P, PI, load-current disturbance and the full mandatory Scope architecture remain future master obligations.
+10. MATLAB source is statically reviewed and parsed by MISS_HIT0.9.44, not executed or certified by MATLAB checkcode. Python integrity tooling is tested separately. Static success cannot certify library masks, compilation or solver behavior.
+11. Experimental output files/hashes do not exist yet. They must be generated in a new P4_RUN_* sibling after separate authorization. No pre-filled PASS table or experimental model is supplied.
+
+Overall project: NOT ACCEPTED. This supplement does not overwrite any ledger, report, manifest, evidence ZIP or release.

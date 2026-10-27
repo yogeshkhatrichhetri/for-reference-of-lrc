@@ -1,0 +1,8 @@
+{
+  "classification": "STATIC_SOURCE_FIXTURE_NOT_MATLAB_EXECUTION",
+  "fixture": "Unchanged V3 runner substituted into temporary copy only",
+  "expected": "Reject late guard",
+  "result": "PASS: harness rejected V3 placement",
+  "returncode": 1,
+  "stderr": "Traceback (most recent call last):\n  File \"/tmp/p4_v4_order_regression_sw1mu5vw/fixture/tools/test_authorization_static.py\", line 57, in <module>\n    assert guard_position<code.index(token),name\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: guard_before_run_directory_creation\n"
+}

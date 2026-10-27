@@ -1,0 +1,793 @@
+{
+  "evidence_class": "DERIVED_ANALYTICAL_NOT_NATIVE",
+  "gains": [
+    2.050062959107108,
+    40.633656994693226,
+    0.027442375755061164,
+    49999.55245385603
+  ],
+  "sampled": {
+    "peak_V": 1.5478754066926164,
+    "peak_time_s": 0.1030865820627323,
+    "overshoot_percent": 1.1683272348115252,
+    "rise_10_90_s": 0.025534386223167893,
+    "settling_finite_horizon_s": 0.039384329504008365,
+    "last_outward_band_crossing_s": null,
+    "threshold_crossings": [
+      [
+        [
+          0.007529900338858641,
+          "up"
+        ]
+      ],
+      [
+        [
+          0.033064286562026535,
+          "up"
+        ]
+      ],
+      [
+        [
+          0.039384329504008365,
+          "up"
+        ]
+      ],
+      []
+    ],
+    "final_y_V": 1.53,
+    "min_y_V": 0.0,
+    "gains": [
+      2.050062959107108,
+      40.633656994693226,
+      0.027442375755061164,
+      49999.55245385603
+    ],
+    "sampled_poles": [
+      [
+        0.3355548688121209,
+        0.5392788751440578
+      ],
+      [
+        0.3355548688121209,
+        -0.5392788751440578
+      ],
+      [
+        0.787662889162849,
+        0.0
+      ],
+      [
+        0.6040956690409279,
+        0.0
+      ]
+    ],
+    "spectral_radius": 0.787662889162849,
+    "continuous_roots": [
+      [
+        -49945.63193306512,
+        0.0
+      ],
+      [
+        -42.98624541124959,
+        50.95209729213438
+      ],
+      [
+        -42.98624541124959,
+        -50.95209729213438
+      ],
+      [
+        -17.948029968424144,
+        0.0
+      ]
+    ],
+    "quartic_coefficients": [
+      0.00051,
+      25.525271751466576,
+      2650.1451565560437,
+      152542.41656843387,
+      2031664.664298158
+    ],
+    "raw_min_V": 0.640273037088054,
+    "raw_max_V": 3.1365963274338755,
+    "raw_max_abs_V": 3.1365963274338755,
+    "applied_min_V": 0.640273037088054,
+    "applied_max_V": 3.1365963274338755,
+    "applied_max_abs_V": 3.1365963274338755,
+    "saturation_intervals_s": [],
+    "integral_min_V": 0.0,
+    "integral_max_V": 1.5684914076797694,
+    "integral_final_V": 1.530000000000001,
+    "max_abs_AW_increment_V": 0.0,
+    "sum_AW_increment_V": 0.0,
+    "independent_one_step_max_difference": 2.220446049250313e-16,
+    "transfer_polynomial_coefficient_difference": 8.881784197001252e-16,
+    "transfer_polynomial_roots": [
+      [
+        0.3355548688121223,
+        0.5392788751440574
+      ],
+      [
+        0.3355548688121223,
+        -0.5392788751440574
+      ],
+      [
+        0.7876628891628465,
+        0.0
+      ],
+      [
+        0.6040956690409282,
+        0.0
+      ]
+    ],
+    "tail": {
+      "time_s": 5,
+      "raw_deviation_bound_V": 2.462862472600367e-15,
+      "output_deviation_bound_V": 1.3916555365624678e-14,
+      "unsaturated_invariant_verified": true,
+      "eigenvector_condition": 255.07725111454934
+    },
+    "settling_s": 0.039384329504008365,
+    "lyapunov_tail": {
+      "verified": true,
+      "scaled_energy": 5.359839021198426e-30,
+      "raw_deviation_bound_V": 4.251764678141532e-15,
+      "output_deviation_bound_V": 1.486925402085388e-14,
+      "residual_max_abs": 1.8041124150158794e-15,
+      "minimum_P_eigenvalue": 1.0740543443193802
+    },
+    "independent_full_trajectory_max_difference": 4.440892098500626e-16,
+    "margins": {
+      "overshoot_percent": 0.8316727651884748,
+      "settling_s": 0.010615670495991637,
+      "stability": 0.212337110837151,
+      "applied_rail_V": 1.8634036725661245,
+      "peak_headroom_V": 0.012724593307383625
+    },
+    "hard_sampled_pass": true
+  },
+  "continuous": {
+    "peak_V": 1.5605298784363801,
+    "peak_time_s": 0.06528078295070809,
+    "overshoot_percent": 1.9954168912666737,
+    "rise_10_90_s": 0.03345395397101879,
+    "settling_finite_horizon_s": 0.049991843390641645,
+    "last_outward_band_crossing_s": null,
+    "threshold_crossings": [
+      [
+        [
+          0.00791482488655397,
+          "up"
+        ]
+      ],
+      [
+        [
+          0.04136877885757276,
+          "up"
+        ]
+      ],
+      [
+        [
+          0.049991843390641645,
+          "up"
+        ]
+      ],
+      []
+    ],
+    "final_y_V": 1.530000000000005,
+    "min_y_V": -4.220227364013412e-16,
+    "raw_min_V": 1.2121119210673814,
+    "raw_max_V": 3.136859663994497,
+    "raw_max_abs_V": 3.136859663994497,
+    "raw_extrema_times_s": [
+      9.169148050831248e-06,
+      0.039621610266933255,
+      0.10843938569290544,
+      0.14623805554022398
+    ],
+    "output_extrema_times_s": [
+      0.06528078295070809,
+      0.11333730382395876
+    ],
+    "tail_output_bound_V": 5.1294863600115e-17,
+    "tail_raw_bound_V": 3.6245588906264874e-17,
+    "continuous_roots": [
+      [
+        -49945.63193306512,
+        0.0
+      ],
+      [
+        -42.98624541124959,
+        50.95209729213438
+      ],
+      [
+        -42.98624541124959,
+        -50.95209729213438
+      ],
+      [
+        -17.948029968424144,
+        0.0
+      ]
+    ],
+    "no_saturation_certified_numerically": true,
+    "stable": true,
+    "quartic_coefficients": [
+      0.00051,
+      25.525271751466576,
+      2650.1451565560437,
+      152542.41656843387,
+      2031664.664298158
+    ],
+    "reference_zeros": [
+      -19.820687366787485,
+      -49999.55245385603
+    ],
+    "step_residues": [
+      [
+        1.530000000000005,
+        0.0
+      ],
+      [
+        -0.1993125437644735,
+        0.0
+      ],
+      [
+        -0.6653437267847013,
+        -0.5964294047248729
+      ],
+      [
+        -0.6653437267847016,
+        0.5964294047248729
+      ],
+      [
+        -2.666128851163449e-09,
+        1.560207207398812e-34
+      ]
+    ],
+    "step_poles": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        -17.948029968424144,
+        0.0
+      ],
+      [
+        -42.98624541124959,
+        -50.95209729213438
+      ],
+      [
+        -42.98624541124959,
+        50.95209729213438
+      ],
+      [
+        -49945.63193306512,
+        0.0
+      ]
+    ],
+    "settling_s": 0.049991843390641645,
+    "margins": {
+      "overshoot_percent": 0.0045831087333263465,
+      "peak_headroom_V": 7.012156361985156e-05,
+      "settling_s": 8.156609358357658e-06,
+      "raw_rail_V": 1.863140336005503
+    },
+    "hard_continuous_pass": true
+  },
+  "perturbations": [
+    {
+      "parameter": "Kp",
+      "relative_change": -0.05,
+      "sampled": {
+        "overshoot_percent": 1.8355373207212302,
+        "settling_s": 0.04204751244684611,
+        "spectral_radius": 0.7506442350938552,
+        "hard_sampled_pass": true
+      },
+      "continuous": {
+        "overshoot_percent": 2.4724147564120478,
+        "settling_s": 0.0759911530009161,
+        "hard_continuous_pass": false
+      }
+    },
+    {
+      "parameter": "Kp",
+      "relative_change": -0.01,
+      "sampled": {
+        "overshoot_percent": 1.2892143598835586,
+        "settling_s": 0.03990404460456157,
+        "spectral_radius": 0.7823285332405482,
+        "hard_sampled_pass": true
+      },
+      "continuous": {
+        "overshoot_percent": 2.0815547221244235,
+        "settling_s": 0.068720047888096,
+        "hard_continuous_pass": false
+      }
+    },
+    {
+      "parameter": "Kp",
+      "relative_change": 0.01,
+      "sampled": {
+        "overshoot_percent": 1.0530912585186891,
+        "settling_s": 0.07302843637836898,
+        "spectral_radius": 0.792477470417235,
+        "hard_sampled_pass": false
+      },
+      "continuous": {
+        "overshoot_percent": 1.9137391149681933,
+        "settling_s": 0.12072143329129228,
+        "hard_continuous_pass": false
+      }
+    },
+    {
+      "parameter": "Kp",
+      "relative_change": 0.05,
+      "sampled": {
+        "overshoot_percent": 1.538120073564554,
+        "settling_s": 0.07948461112688847,
+        "spectral_radius": 0.8082054072120131,
+        "hard_sampled_pass": false
+      },
+      "continuous": {
+        "overshoot_percent": 1.6298685654395126,
+        "settling_s": 0.12861196851379922,
+        "hard_continuous_pass": false
+      }
+    },
+    {
+      "parameter": "Ki",
+      "relative_change": -0.05,
+      "sampled": {
+        "overshoot_percent": 0.4086975842508637,
+        "settling_s": 0.08013451225930658,
+        "spectral_radius": 0.8088277512743561,
+        "hard_sampled_pass": false
+      },
+      "continuous": {
+        "overshoot_percent": 0.6976322776505456,
+        "settling_s": 0.13211560754541704,
+        "hard_continuous_pass": false
+      }
+    },
+    {
+      "parameter": "Ki",
+      "relative_change": -0.01,
+      "sampled": {
+        "overshoot_percent": 1.0212997123305276,
+        "settling_s": 0.07312448712164638,
+        "spectral_radius": 0.7922664560352636,
+        "hard_sampled_pass": false
+      },
+      "continuous": {
+        "overshoot_percent": 1.737958372983122,
+        "settling_s": 0.12096549755256239,
+        "hard_continuous_pass": false
+      }
+    },
+    {
+      "parameter": "Ki",
+      "relative_change": 0.01,
+      "sampled": {
+        "overshoot_percent": 1.3130069080615279,
+        "settling_s": 0.039093697771667615,
+        "spectral_radius": 0.782818689470363,
+        "hard_sampled_pass": true
+      },
+      "continuous": {
+        "overshoot_percent": 2.2518446483305357,
+        "settling_s": 0.07038180025274594,
+        "hard_continuous_pass": false
+      }
+    },
+    {
+      "parameter": "Ki",
+      "relative_change": 0.05,
+      "sampled": {
+        "overshoot_percent": 2.3044991541632918,
+        "settling_s": 0.050893752302490505,
+        "spectral_radius": 0.7599557684548254,
+        "hard_sampled_pass": false
+      },
+      "continuous": {
+        "overshoot_percent": 3.267427864774359,
+        "settling_s": 0.07758320614352655,
+        "hard_continuous_pass": false
+      }
+    },
+    {
+      "parameter": "Kd",
+      "relative_change": -0.05,
+      "sampled": {
+        "overshoot_percent": 2.2700827823717535,
+        "settling_s": 0.07594500884899483,
+        "spectral_radius": 0.7956790824616277,
+        "hard_sampled_pass": false
+      },
+      "continuous": {
+        "overshoot_percent": 2.1961434331281513,
+        "settling_s": 0.1286167992644144,
+        "hard_continuous_pass": false
+      }
+    },
+    {
+      "parameter": "Kd",
+      "relative_change": -0.01,
+      "sampled": {
+        "overshoot_percent": 1.103175142411282,
+        "settling_s": 0.06889064077761616,
+        "spectral_radius": 0.7894363870748049,
+        "hard_sampled_pass": false
+      },
+      "continuous": {
+        "overshoot_percent": 2.030440832798163,
+        "settling_s": 0.12038445164280397,
+        "hard_continuous_pass": false
+      }
+    },
+    {
+      "parameter": "Kd",
+      "relative_change": 0.01,
+      "sampled": {
+        "overshoot_percent": 1.2594706392313828,
+        "settling_s": 0.06732759968126865,
+        "spectral_radius": 0.7857820560344176,
+        "hard_sampled_pass": false
+      },
+      "continuous": {
+        "overshoot_percent": 1.962938063114739,
+        "settling_s": 0.050248702864983424,
+        "hard_continuous_pass": false
+      }
+    },
+    {
+      "parameter": "Kd",
+      "relative_change": 0.05,
+      "sampled": {
+        "overshoot_percent": 1.6315653414381868,
+        "settling_s": 0.06763589118925398,
+        "spectral_radius": 0.7768067330188843,
+        "hard_sampled_pass": false
+      },
+      "continuous": {
+        "overshoot_percent": 1.8582746202427256,
+        "settling_s": 0.05127711723344278,
+        "hard_continuous_pass": false
+      }
+    },
+    {
+      "parameter": "N",
+      "relative_change": -0.05,
+      "sampled": {
+        "overshoot_percent": 1.1688007172232637,
+        "settling_s": 0.03938263101357346,
+        "spectral_radius": 0.787657707262077,
+        "hard_sampled_pass": true
+      },
+      "continuous": {
+        "overshoot_percent": 1.9945043315659128,
+        "settling_s": 0.049992953694170124,
+        "hard_continuous_pass": true
+      }
+    },
+    {
+      "parameter": "N",
+      "relative_change": -0.01,
+      "sampled": {
+        "overshoot_percent": 1.1684180930446482,
+        "settling_s": 0.0393840035092043,
+        "spectral_radius": 0.7876618947713312,
+        "hard_sampled_pass": true
+      },
+      "continuous": {
+        "overshoot_percent": 1.9952417523576484,
+        "settling_s": 0.049992056463265315,
+        "hard_continuous_pass": true
+      }
+    },
+    {
+      "parameter": "N",
+      "relative_change": 0.01,
+      "sampled": {
+        "overshoot_percent": 1.1682381813426705,
+        "settling_s": 0.03938464905355808,
+        "spectral_radius": 0.7876638638105877,
+        "hard_sampled_pass": true
+      },
+      "continuous": {
+        "overshoot_percent": 1.9955885626252403,
+        "settling_s": 0.0499916345446224,
+        "hard_continuous_pass": true
+      }
+    },
+    {
+      "parameter": "N",
+      "relative_change": 0.05,
+      "sampled": {
+        "overshoot_percent": 1.1678989807444582,
+        "settling_s": 0.03938586647664022,
+        "spectral_radius": 0.7876675762750535,
+        "hard_sampled_pass": true
+      },
+      "continuous": {
+        "overshoot_percent": 1.9962425537232922,
+        "settling_s": 0.04999083900732434,
+        "hard_continuous_pass": true
+      }
+    }
+  ],
+  "rounded_8_significant_digits": {
+    "gains": [
+      2.050063,
+      40.633657,
+      0.027442376,
+      49999.552
+    ],
+    "sampled": {
+      "peak_V": 1.5478754043597382,
+      "peak_time_s": 0.10308658176448761,
+      "overshoot_percent": 1.1683270823358316,
+      "rise_10_90_s": 0.02553438581275377,
+      "settling_finite_horizon_s": 0.03938432879361403,
+      "last_outward_band_crossing_s": null,
+      "threshold_crossings": [
+        [
+          [
+            0.007529900258293867,
+            "up"
+          ]
+        ],
+        [
+          [
+            0.03306428607104764,
+            "up"
+          ]
+        ],
+        [
+          [
+            0.03938432879361403,
+            "up"
+          ]
+        ],
+        []
+      ],
+      "final_y_V": 1.5300000000000002,
+      "min_y_V": 0.0,
+      "gains": [
+        2.050063,
+        40.633657,
+        0.027442376,
+        49999.552
+      ],
+      "sampled_poles": [
+        [
+          0.33555486720268857,
+          0.5392788820198311
+        ],
+        [
+          0.33555486720268857,
+          -0.5392788820198311
+        ],
+        [
+          0.7876628975532506,
+          0.0
+        ],
+        [
+          0.6040956585179162,
+          0.0
+        ]
+      ],
+      "spectral_radius": 0.7876628975532506,
+      "continuous_roots": [
+        [
+          -49945.63147872629,
+          0.0
+        ],
+        [
+          -42.98624585048944,
+          50.952097889484676
+        ],
+        [
+          -42.98624585048944,
+          -50.952097889484676
+        ],
+        [
+          -17.948029572753157,
+          0.0
+        ]
+      ],
+      "quartic_coefficients": [
+        0.00051,
+        25.525271520000004,
+        2650.145144815552,
+        152542.41722877603,
+        2031664.6461216642
+      ],
+      "raw_min_V": 0.6402729930241653,
+      "raw_max_V": 3.1365963900000002,
+      "raw_max_abs_V": 3.1365963900000002,
+      "applied_min_V": 0.6402729930241653,
+      "applied_max_V": 3.1365963900000002,
+      "applied_max_abs_V": 3.1365963900000002,
+      "saturation_intervals_s": [],
+      "integral_min_V": 0.0,
+      "integral_max_V": 1.5684914000716956,
+      "integral_final_V": 1.53,
+      "max_abs_AW_increment_V": 0.0,
+      "sum_AW_increment_V": 0.0,
+      "independent_one_step_max_difference": 2.220446049250313e-16,
+      "transfer_polynomial_coefficient_difference": 4.440892098500626e-16,
+      "transfer_polynomial_roots": [
+        [
+          0.33555486720268934,
+          0.5392788820198308
+        ],
+        [
+          0.33555486720268934,
+          -0.5392788820198308
+        ],
+        [
+          0.7876628975532489,
+          0.0
+        ],
+        [
+          0.6040956585179176,
+          0.0
+        ]
+      ],
+      "tail": {
+        "time_s": 5,
+        "raw_deviation_bound_V": 2.1964962131976236e-15,
+        "output_deviation_bound_V": 1.1285570866551888e-14,
+        "unsaturated_invariant_verified": true,
+        "eigenvector_condition": 255.0772246880018
+      },
+      "settling_s": 0.03938432879361403,
+      "lyapunov_tail": {
+        "verified": true,
+        "scaled_energy": 1.0339527461800543e-30,
+        "raw_deviation_bound_V": 1.8674272553302146e-15,
+        "output_deviation_bound_V": 6.530758944439169e-15,
+        "residual_max_abs": 1.1102230246251565e-15,
+        "minimum_P_eigenvalue": 1.0740543456016567
+      },
+      "independent_full_trajectory_max_difference": 6.661338147750939e-16,
+      "margins": {
+        "overshoot_percent": 0.8316729176641684,
+        "settling_s": 0.010615671206385971,
+        "stability": 0.21233710244674942,
+        "applied_rail_V": 1.8634036099999998,
+        "peak_headroom_V": 0.012724595640261738
+      },
+      "hard_sampled_pass": true
+    },
+    "continuous": {
+      "peak_V": 1.5605298754640708,
+      "peak_time_s": 0.06528078222921728,
+      "overshoot_percent": 1.9954166969980929,
+      "rise_10_90_s": 0.03345395372455164,
+      "settling_finite_horizon_s": 0.04999184313168982,
+      "last_outward_band_crossing_s": null,
+      "threshold_crossings": [
+        [
+          [
+            0.007914824808137993,
+            "up"
+          ]
+        ],
+        [
+          [
+            0.04136877853268964,
+            "up"
+          ]
+        ],
+        [
+          [
+            0.04999184313168982,
+            "up"
+          ]
+        ],
+        []
+      ],
+      "final_y_V": 1.530000000000008,
+      "min_y_V": 9.421025852215307e-17,
+      "raw_min_V": 1.2121119096313993,
+      "raw_max_V": 3.1368597265542206,
+      "raw_max_abs_V": 3.1368597265542206,
+      "raw_extrema_times_s": [
+        9.16914779939744e-06,
+        0.03962160991751988,
+        0.108439384563296,
+        0.14623805347704785
+      ],
+      "output_extrema_times_s": [
+        0.06528078222921728,
+        0.11333730209861965
+      ],
+      "tail_output_bound_V": 5.129490479197461e-17,
+      "tail_raw_bound_V": 3.6245618158934415e-17,
+      "continuous_roots": [
+        [
+          -49945.63147872629,
+          0.0
+        ],
+        [
+          -42.98624585048944,
+          50.952097889484676
+        ],
+        [
+          -42.98624585048944,
+          -50.952097889484676
+        ],
+        [
+          -17.948029572753157,
+          0.0
+        ]
+      ],
+      "no_saturation_certified_numerically": true,
+      "stable": true,
+      "quartic_coefficients": [
+        0.00051,
+        25.525271520000004,
+        2650.145144815552,
+        152542.41722877603,
+        2031664.6461216642
+      ],
+      "reference_zeros": [
+        -19.820686974010066,
+        -49999.552
+      ],
+      "step_residues": [
+        [
+          1.530000000000008,
+          1.0271798061152976e-16
+        ],
+        [
+          -0.199312546096098,
+          -1.8456492928421488e-17
+        ],
+        [
+          -0.6653437256188904,
+          -0.5964294021214558
+        ],
+        [
+          -0.6653437256188904,
+          0.5964294021214558
+        ],
+        [
+          -2.666129001064269e-09,
+          0.0
+        ]
+      ],
+      "step_poles": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          -17.948029572753157,
+          0.0
+        ],
+        [
+          -42.98624585048944,
+          -50.952097889484676
+        ],
+        [
+          -42.98624585048944,
+          50.952097889484676
+        ],
+        [
+          -49945.63147872629,
+          0.0
+        ]
+      ],
+      "settling_s": 0.04999184313168982,
+      "margins": {
+        "overshoot_percent": 0.004583303001907124,
+        "peak_headroom_V": 7.012453592913914e-05,
+        "settling_s": 8.156868310182919e-06,
+        "raw_rail_V": 1.8631402734457794
+      },
+      "hard_continuous_pass": true
+    }
+  }
+}

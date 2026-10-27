@@ -1,0 +1,19 @@
+{
+  "classification": "STATIC_PACKAGE_PREPARATION_ONLY",
+  "final_component_count": 72,
+  "final_archive_file_entries": 73,
+  "authorization_predicate_tests": 22,
+  "authorization_ordering_tests": 7,
+  "all_original_22_cases_retained_unchanged": true,
+  "static_tests": "PASS",
+  "late_V3_guard_regression": "PASS_REJECTED",
+  "MATLAB_syntax": {
+    "files": 13,
+    "parser": "MISS_HIT 0.9.44",
+    "status": "PASS"
+  },
+  "Python_syntax": "PASS",
+  "final_verifier_log": "revision_evidence/FINAL_VERIFIER_LOG.txt",
+  "native_execution": "NOT PERFORMED",
+  "overall_project": "NOT ACCEPTED"
+}
